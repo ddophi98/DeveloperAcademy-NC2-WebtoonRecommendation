@@ -70,6 +70,7 @@ if __name__ == '__main__':
         print("--vectorized load end--")
 
     # k-meas 클러스터링 하기
+    print("--kmeans clustering start--")
     ct = MyClustering(vectorized, vectorizer, td.categorized_data[genre])
     ct.kmeans_cluster()
     print("--kmeans clustering end--")

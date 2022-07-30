@@ -1,20 +1,45 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_samples
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
 class MyClustering:
-    cluster_num = 5
-    kmeans = KMeans(n_clusters=cluster_num, max_iter=10000, random_state=42)
     top_n_features = 5
 
     def __init__(self, vectorized, vectorizer, categorized_data):
         self.vectorized = vectorized
         self.vectorizer = vectorizer
         self.data = categorized_data
+        self.cluster_num = self.get_proper_k()
+        self.kmeans = KMeans(n_clusters=self.cluster_num, init='k-means++')
+
+    # silhoutte 방법으로 적정 k값 구하기
+    def get_proper_k(self):
+        max_k = len(self.data) // 5
+
+        # 데이터 개수가 너무 적으면 k=1로 하기
+        if max_k <= 1:
+            return 1
+
+        silhoutte_values = []
+        for i in range(2, max_k+1):
+            kmeans = KMeans(n_clusters=i, init='k-means++')
+            pred = kmeans.fit_predict(self.vectorized)
+            silhoutte_values.append(np.mean(silhouette_samples(self.vectorized, pred)))
+
+        proper_k = np.argmax(silhoutte_values)
+
+        plt.plot(range(2, max_k+1), silhoutte_values, marker="o")
+        plt.xlabel("k값")
+        plt.ylabel("Silhoutte값")
+        plt.show()
+
+        print("적정 k값: " + str(proper_k))
+        return proper_k
 
     # K-means로 군집화시키기
     def kmeans_cluster(self):
@@ -35,7 +60,7 @@ class MyClustering:
             cluster_details[cluster_num] = {}
             cluster_details[cluster_num]['cluster'] = cluster_num
 
-            # 각 feature별 center값들 정렬한 인덱스 중 상위 10개만 추출
+            # 각 feature별 center값들 정렬한 인덱스 중 상위 값들 추출
             top_ftr_idx = center_feature_idx[cluster_num, :self.top_n_features]
             top_ftr = [feature_names[idx] for idx in top_ftr_idx]
             # top_ftr_idx를 활용해서 상위 10개 feature들의 center값들 반환
@@ -61,7 +86,7 @@ class MyClustering:
         for cluster_num, cluster_detail in cluster_details.items():
             print()
             print(f"Cluster Num: {cluster_num}")
-            print(f"상위 5개 feature 단어들:\n", cluster_detail['top_features'])
+            print(f"상위 " + str(self.top_n_features) + "개 feature 단어들:\n", cluster_detail['top_features'])
             print()
             for i in range(len(cluster_detail['title'])):
                 print("- " + cluster_detail['title'][i])
@@ -80,14 +105,9 @@ class MyClustering:
             if row['title'] == item_title:
                 target_cluster = row['cluster_label']
                 selected_item_idx = idx
-                print("target_cluser: " + str(target_cluster))
-                print("selected_item_idx: " + str(selected_item_idx))
-                print()
                 break
 
         selected_cluster_idx = self.data[self.data['cluster_label'] == target_cluster].index
-        print("해당 카테고리로 클러스터링된 문서들의 인덱스:\n", selected_cluster_idx)
-        print()
         # 해당 카테고리로 클러스터링 된 문서들의 인덱스 중 하나 선택해 비교 기준으로 삼을 문서 선정
         print("유사도 비교 기준 문서 이름:", item_title)
         print()
@@ -97,7 +117,6 @@ class MyClustering:
 
         # 위에서 추출한 카테고리로 클러스터링된 문서들의 인덱스 중 비교기준문서를 제외한 다른 문서들과의 유사도 측정
         similarity = cosine_similarity(self.vectorized[selected_item_idx], self.vectorized[selected_cluster_idx])
-        print(similarity)
 
         # array 내림차순으로 정렬한 후 인덱스 반환
         sorted_idx = np.argsort(similarity)[:, ::-1]
@@ -116,7 +135,7 @@ class MyClustering:
         selected_sim_df['similarity'] = sorted_sim_values
 
         plt.rc('font', family='AppleGothic')
-        plt.figure(figsize=(20, 25), dpi=70)
+        plt.figure(figsize=(20, 10), dpi=70)
         sns.barplot(data=selected_sim_df, x='similarity', y='title')
         plt.title(item_title)
         plt.show()
