@@ -1,5 +1,3 @@
-import math
-
 import pandas as pd
 
 
@@ -7,6 +5,7 @@ class TotalData:
     # 전체 정보를 저장할 변수
     total_data = pd.DataFrame({
         "id": [],
+        "thumbnail": [],
         "title": [],
         "author": [],
         "day": [],
@@ -26,6 +25,7 @@ class TotalData:
     def make_total_data(wd):
         my_total_data = pd.DataFrame({
             "id": [],
+            "thumbnail": [],
             "title": [],
             "author": [],
             "day": [],
@@ -36,6 +36,7 @@ class TotalData:
         })
 
         my_total_data['id'] = wd.id_list
+        my_total_data['thumbnail'] = wd.thumbnail_list
         my_total_data['title'] = wd.title_list
         my_total_data['author'] = wd.author_list
         my_total_data['day'] = wd.day_list
@@ -63,6 +64,7 @@ class TotalData:
         for category in TotalData.categories:
             TotalData.categorized_data[category] = pd.DataFrame({
                                             "id": [],
+                                            "thumbnail": [],
                                             "title": [],
                                             "author": [],
                                             "day": [],
@@ -74,6 +76,7 @@ class TotalData:
                 if category in (row['first_genre'], row['second_genre']):
                     new_data = pd.DataFrame({
                         'id': [row['id']],
+                        "thumbnail": [row['thumbnail']],
                         'title': [row['title']],
                         'author': [row['author']],
                         'day': [row['day']],

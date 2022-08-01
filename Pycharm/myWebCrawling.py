@@ -10,13 +10,14 @@ from time import sleep
 from webtoonData import WebtoonData
 from totalData import TotalData as td
 from myUtil import MyUtil as ut
+from urllib.request import urlopen
 import os.path
 
 
 class MyWebCrawling:
     nw_url = 'https://comic.naver.com/webtoon/weekday'
     kw_url = 'https://page.kakao.com/main?categoryUid=10&subCategoryUid=1002'
-    chromedriver_url = '/Users/ddophi/Desktop/storage/PycharmProjects/webtoonRecommend/chromedriver'
+    chromedriver_url = '/Users/ddophi/Desktop/storage/PycharmProjects/SideProjcet-WebtoonRecommendation/Pycharm/chromedriver'
     login_id = 'barezebe119@naver.com'
     login_pw = 'Whiteout00'
 
@@ -53,11 +54,15 @@ class MyWebCrawling:
                 continue
 
             # 나머지 정보 수집
+            image_url = soup.find('div', {'class': 'thumb'}).find('a').find('img')
+            image_url = image_url['src']
             author = soup.find('span', {'class': 'wrt_nm'}).text[8:]
             genre = soup.find('span', {'class': 'genre'}).text.split(", ")
             story = soup.find('div', {'class': 'detail'}).find('p').text
+
             # 리스트에 추가
             wd.id_list.append(i)
+            wd.thumbnail_list.append(image_url)
             wd.title_list.append(current_title)
             wd.author_list.append(author)
             wd.day_list.append(day)
@@ -114,6 +119,8 @@ class MyWebCrawling:
                 html = driver.page_source
                 soup = bs(html, 'html.parser')
 
+                image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('image')
+                image_url = image_url['src']
                 title = soup.find('h2', {'class': 'css-jgjrt'}).text
                 day = soup.find_all('div', {'class': 'css-7a7cma'})[0].text
                 day = day[:day.find(" 연재")]
@@ -129,6 +136,7 @@ class MyWebCrawling:
 
                 # 리스트에 추가
                 wd.id_list.append(idx)
+                wd.thumbnail_list.append(image_url)
                 wd.title_list.append(title)
                 wd.author_list.append(author)
                 wd.day_list.append(day)
