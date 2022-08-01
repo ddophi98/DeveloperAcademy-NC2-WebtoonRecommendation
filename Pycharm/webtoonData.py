@@ -1,6 +1,7 @@
 class WebtoonData:
     def __init__(self):
         self.id_list = []
+        self.thumbnail_list = []
         self.title_list = []
         self.author_list = []
         self.day_list = []
