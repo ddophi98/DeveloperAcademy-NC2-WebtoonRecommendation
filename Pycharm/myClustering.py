@@ -19,7 +19,7 @@ class MyClustering:
 
     # silhoutte 방법으로 적정 k값 구하기
     def get_proper_k(self):
-        max_k = len(self.data) // 5
+        max_k = len(self.data) // 10
 
         # 데이터 개수가 너무 적으면 k=1로 하기
         if max_k <= 1:
@@ -32,11 +32,6 @@ class MyClustering:
             silhoutte_values.append(np.mean(silhouette_samples(self.vectorized, pred)))
 
         proper_k = np.argmax(silhoutte_values)
-
-        plt.plot(range(2, max_k+1), silhoutte_values, marker="o")
-        plt.xlabel("k값")
-        plt.ylabel("Silhoutte값")
-        plt.show()
 
         print("적정 k값: " + str(proper_k))
         return proper_k
@@ -85,11 +80,11 @@ class MyClustering:
         cluster_details = self.get_cluster_details()
         for cluster_num, cluster_detail in cluster_details.items():
             print()
-            print(f"Cluster Num: {cluster_num}")
-            print(f"상위 " + str(self.top_n_features) + "개 feature 단어들:\n", cluster_detail['top_features'])
-            print()
             for i in range(len(cluster_detail['title'])):
-                print("- " + cluster_detail['title'][i])
+                print()
+                print(f"Cluster Num: {cluster_num}")
+                print(cluster_detail['top_features'])
+                print("제목 - " + cluster_detail['title'][i])
                 print(cluster_detail['story'][i])
                 print('-' * 40)
             print('\n\n' + '~' * 160 + '\n\n')
