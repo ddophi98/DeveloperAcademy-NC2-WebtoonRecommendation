@@ -12,7 +12,7 @@ kakao_csv_filename = "카카오웹툰정보.csv"
 vector_filename_form = "vector_data.pickle"
 genre = "소년"
 vector_filename = genre + "_" + vector_filename_form
-webtoonName = "도굴왕"
+webtoonName = "나 혼자만 레벨업"
 
 if __name__ == '__main__':
     wc = MyWebCrawling()
@@ -57,10 +57,15 @@ if __name__ == '__main__':
     td.classify_by_category()
     print("--categorizing end--")
 
+    if genre == "전체":
+        current_data = td.total_data
+    else:
+        current_data = td.categorized_data[genre]
+
     # 토큰화 및 벡터화하기 (새로 하기 또는 이미 되어있는 값)
     if not os.path.isfile(vector_filename):
         print("--vectorized start--")
-        tk = MyTokenize(td.categorized_data[genre])
+        tk = MyTokenize(current_data)
         vectorized = tk.get_vectorized_data()
         vectorizer = tk.tfidf_vectorizer
         ut.save_data(vector_filename, (vectorized, vectorizer))
@@ -71,7 +76,7 @@ if __name__ == '__main__':
 
     # k-meas 클러스터링 하기
     print("--kmeans clustering start--")
-    ct = MyClustering(vectorized, vectorizer, td.categorized_data[genre])
+    ct = MyClustering(vectorized, vectorizer, current_data)
     ct.kmeans_cluster()
     print("--kmeans clustering end--")
     ct.print_cluster_details()
