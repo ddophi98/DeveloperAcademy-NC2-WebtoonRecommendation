@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-class MyClustering:
+class MyStoryClustering:
     top_n_features = 5
 
     def __init__(self, vectorized, vectorizer, categorized_data):
