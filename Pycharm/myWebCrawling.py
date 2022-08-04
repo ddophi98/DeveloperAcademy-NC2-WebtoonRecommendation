@@ -10,7 +10,6 @@ from time import sleep
 from webtoonData import WebtoonData
 from totalData import TotalData as td
 from myUtil import MyUtil as ut
-from urllib.request import urlopen
 import os.path
 
 
@@ -111,6 +110,12 @@ class MyWebCrawling:
                 sleep(2)
                 driver.switch_to.window(driver.window_handles[1])
 
+                # 이미지 정보 먼저 저장하기
+                html = driver.page_source
+                soup = bs(html, 'html.parser')
+                image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('img')
+                image_url = image_url['src']
+
                 # 작품소개 창 열기
                 driver.find_element(By.CLASS_NAME, "css-nxuz68").click()
 
@@ -119,8 +124,6 @@ class MyWebCrawling:
                 html = driver.page_source
                 soup = bs(html, 'html.parser')
 
-                image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('image')
-                image_url = image_url['src']
                 title = soup.find('h2', {'class': 'css-jgjrt'}).text
                 day = soup.find_all('div', {'class': 'css-7a7cma'})[0].text
                 day = day[:day.find(" 연재")]
@@ -195,7 +198,16 @@ class MyWebCrawling:
                 sleep(2)
                 driver.switch_to.window(driver.window_handles[1])
 
+                # 이미지 정보 먼저 저장하기
+                html = driver.page_source
+                soup = bs(html, 'html.parser')
+                image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('img')
+                image_url = image_url['src']
+
                 # 작품소개 창 열기
+                notice = driver.find_elements(By.CLASS_NAME, "jsx-3114325382")
+                if notice:
+                    notice[0].click()
                 driver.find_element(By.CLASS_NAME, "css-nxuz68").click()
 
                 # 현재 창에서 데이터 읽기
@@ -214,6 +226,7 @@ class MyWebCrawling:
 
                 # 리스트에 추가
                 day_wd.id_list.append(idx)
+                day_wd.thumbnail_list.append(image_url)
                 day_wd.title_list.append(title)
                 day_wd.author_list.append(author)
                 day_wd.day_list.append(day)
