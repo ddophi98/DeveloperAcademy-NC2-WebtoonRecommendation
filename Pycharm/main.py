@@ -4,7 +4,8 @@ from totalData import TotalData as td
 from myWebCrawling import MyWebCrawling
 from myUtil import MyUtil as ut
 from myTokenize import MyTokenize
-from myClustering import MyClustering
+from myStoryClustering import MyStoryClustering
+from myStyleExtract import MyStyleExtract
 
 
 naver_csv_filename = "네이버웹툰정보.csv"
@@ -17,7 +18,7 @@ webtoonName = "나 혼자만 레벨업"
 if __name__ == '__main__':
     wc = MyWebCrawling()
 
-    # 네이버 웹툰 정보 가져오기 (크롤링 또는 저장된 데이터)
+    # 네이버 웹툰 정보 가져오기 (크롤링 또는 저장된 데이터 불러오기)
     if not os.path.isfile(naver_csv_filename):
         print("--naver web crawling start--")
         naver_wd = wc.get_naver_webtoon_info()
@@ -29,7 +30,7 @@ if __name__ == '__main__':
         naver_td = ut.get_from_csv(naver_csv_filename)
         print("--getting naver csv file end--")
 
-    # 카카오 웹툰 정보 가져오기 (크롤링 또는 저장된 데이터)
+    # 카카오 웹툰 정보 가져오기 (크롤링 또는 저장된 데이터 불러오기)
     if not os.path.isfile(kakao_csv_filename):
         # # 이상적인 과정
         # print("--kakao web crawling start--")
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     else:
         current_data = td.categorized_data[genre]
 
-    # 토큰화 및 벡터화하기 (새로 하기 또는 이미 되어있는 값)
+    # 토큰화 및 벡터화하기 (새로 하기 또는 이미 되어있는 값 불러오기)
     if not os.path.isfile(vector_filename):
         print("--vectorized start--")
         tk = MyTokenize(current_data)
@@ -74,12 +75,18 @@ if __name__ == '__main__':
         vectorized, vectorizer = ut.load_data(vector_filename)
         print("--vectorized load end--")
 
-    # k-meas 클러스터링 하기
+    # story에 대한 k-means 클러스터링 하기
     print("--kmeans clustering start--")
-    ct = MyClustering(vectorized, vectorizer, current_data)
-    ct.kmeans_cluster()
+    story_ct = MyStoryClustering(vectorized, vectorizer, current_data)
+    story_ct.kmeans_cluster()
     print("--kmeans clustering end--")
-    ct.print_cluster_details()
-    ct.compare_similarity(webtoonName)
+    story_ct.print_cluster_details()
+    story_ct.compare_similarity(webtoonName)
+
+    # 각 웹툰 썸네일에 대한 그림체 추출하기
+    style_ext = MyStyleExtract()
+    print(current_data['thumbnail'][0])
+    img = style_ext.load_img(current_data['thumbnail'][0])
+    style_ext.img_show(img)
 
 
