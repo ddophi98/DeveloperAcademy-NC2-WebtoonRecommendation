@@ -5,7 +5,6 @@ from myWebCrawling import MyWebCrawling
 from myUtil import MyUtil as ut
 from myTokenize import MyTokenize
 from myStoryClustering import MyStoryClustering
-from myStyleExtract import MyStyleExtract
 
 
 naver_csv_filename = "네이버웹툰정보.csv"
@@ -82,11 +81,5 @@ if __name__ == '__main__':
     print("--kmeans clustering end--")
     story_ct.print_cluster_details()
     story_ct.compare_similarity(webtoonName)
-
-    # 각 웹툰 썸네일에 대한 그림체 추출하기
-    style_ext = MyStyleExtract()
-    print(current_data['thumbnail'][0])
-    img = style_ext.load_img(current_data['thumbnail'][0])
-    style_ext.img_show(img)
 
 
