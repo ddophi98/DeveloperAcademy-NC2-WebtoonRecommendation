@@ -84,5 +84,5 @@ class TotalData:
                         'platform': [row['platform']]
                     }, index=[idx])
                     idx += 1
-                    categorized[category] = categorized[category].append(new_data)
+                    categorized[category] = pd.concat([categorized[category], new_data])
             print(category + " 개수: " + str(len(categorized[category])))

@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_samples
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import font_manager, rc
 import seaborn as sns
 
 
@@ -16,6 +17,11 @@ class MyStoryClustering:
         self.data = categorized_data
         self.cluster_num = self.get_proper_k()
         self.kmeans = KMeans(n_clusters=self.cluster_num, init='k-means++')
+
+        # 한글 폰트 설정
+        font_path = "C:/Windows/Fonts/batang.ttc"
+        font = font_manager.FontProperties(fname=font_path).get_name()
+        rc('font', family=font, size=15)
 
     # silhoutte 방법으로 적정 k값 구하기
     def get_proper_k(self):
@@ -129,8 +135,7 @@ class MyStoryClustering:
         selected_sim_df['title'] = self.data[self.data['cluster_label'] == target_cluster].iloc[sorted_idx]['title']
         selected_sim_df['similarity'] = sorted_sim_values
 
-        plt.rc('font', family='AppleGothic')
-        plt.figure(figsize=(20, 10), dpi=70)
+        plt.figure(figsize=(25, 10), dpi=60)
         sns.barplot(data=selected_sim_df, x='similarity', y='title')
         plt.title(item_title)
         plt.show()
