@@ -115,6 +115,7 @@ class MyWebCrawling:
                 soup = bs(html, 'html.parser')
                 image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('img')
                 image_url = image_url['src']
+                image_url = "https:" + image_url
 
                 # 작품소개 창 열기
                 driver.find_element(By.CLASS_NAME, "css-nxuz68").click()
@@ -203,6 +204,7 @@ class MyWebCrawling:
                 soup = bs(html, 'html.parser')
                 image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('img')
                 image_url = image_url['src']
+                image_url = "https:" + image_url
 
                 # 작품소개 창 열기
                 notice = driver.find_elements(By.CLASS_NAME, "jsx-3114325382")
