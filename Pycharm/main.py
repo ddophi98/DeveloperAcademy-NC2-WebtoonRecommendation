@@ -5,6 +5,7 @@ from myWebCrawling import MyWebCrawling
 from myUtil import MyUtil as ut
 from myTokenize import MyTokenize
 from myStoryClustering import MyStoryClustering
+from myStyleClustering import MyStyleClustering
 
 
 naver_csv_filename = "네이버웹툰정보.csv"
@@ -75,11 +76,19 @@ if __name__ == '__main__':
         print("--vectorized load end--")
 
     # story에 대한 k-means 클러스터링 하기
-    print("--kmeans clustering start--")
+    print("--kmeans story clustering start--")
     story_ct = MyStoryClustering(vectorized, vectorizer, current_data)
     story_ct.kmeans_cluster()
     print("--kmeans clustering end--")
     story_ct.print_cluster_details()
     story_ct.compare_similarity(webtoonName)
+
+    # style에 대한 k-means 클러스터링 하기
+    print("--kmeans style clustering start--")
+    style_ct = MyStyleClustering(td.total_data)
+    thumbnails = style_ct.get_img()
+    style_info_list = style_ct.extract_style(thumbnails)
+    results = style_ct.kmeans_cluster(style_info_list)
+    style_ct.print_cluster_details(results)
 
 
