@@ -11,12 +11,10 @@ import seaborn as sns
 class MyStoryClustering:
     top_n_features = 5
 
-    def __init__(self, vectorized, vectorizer, categorized_data):
+    def __init__(self, vectorized, vectorizer, total_data):
         self.vectorized = vectorized
         self.vectorizer = vectorizer
-        self.data = categorized_data
-        self.cluster_num = self.get_proper_k()
-        self.kmeans = KMeans(n_clusters=self.cluster_num, init='k-means++')
+        self.data = total_data
 
         # 한글 폰트 설정
         font_path = "C:/Windows/Fonts/batang.ttc"
@@ -24,29 +22,30 @@ class MyStoryClustering:
         rc('font', family=font, size=15)
 
     # silhoutte 방법으로 적정 k값 구하기
-    def get_proper_k(self):
-        max_k = len(self.data) // 10
+    def get_proper_k(self, data_index):
+        max_k = len(data_index) // 10
 
         # 데이터 개수가 너무 적으면 k=1로 하기
         if max_k <= 1:
-            return 1
+            proper_k = 1
+        else:
+            silhoutte_values = []
+            for i in range(2, max_k+1):
+                kmeans = KMeans(n_clusters=i, init='k-means++')
+                pred = kmeans.fit_predict(self.vectorized[data_index])
+                silhoutte_values.append(np.mean(silhouette_samples(self.vectorized[data_index], pred)))
 
-        silhoutte_values = []
-        for i in range(2, max_k+1):
-            kmeans = KMeans(n_clusters=i, init='k-means++')
-            pred = kmeans.fit_predict(self.vectorized)
-            silhoutte_values.append(np.mean(silhouette_samples(self.vectorized, pred)))
+            proper_k = np.argmax(silhoutte_values) + 2
 
-        proper_k = np.argmax(silhoutte_values)
-
-        print("적정 k값: " + str(proper_k))
         return proper_k
 
     # K-means로 군집화시키기
-    def kmeans_cluster(self):
-        cluster_label = self.kmeans.fit_predict(self.vectorized)
-        self.data['cluster_label'] = cluster_label
-        self.data = self.data.sort_values(by=['cluster_label'])
+    def kmeans_cluster(self, genre, data_index):
+        cluster_num = self.get_proper_k(data_index)
+        print(genre + ": " + str(cluster_num))
+        kmeans = KMeans(n_clusters=cluster_num, init='k-means++')
+        cluster_label = kmeans.fit_predict(self.vectorized[data_index])
+        return cluster_label
 
     # 군집별 핵심단어 추출하기
     def get_cluster_details(self):

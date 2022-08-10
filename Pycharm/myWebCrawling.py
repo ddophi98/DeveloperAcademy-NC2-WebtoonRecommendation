@@ -41,6 +41,9 @@ class MyWebCrawling:
             html = driver.page_source
             soup = bs(html, 'html.parser')
 
+            # 아이디 기록
+            wd.id_list.append(i)
+
             # 요일 수집
             day = soup.find_all('ul', {'class': 'category_tab'})
             day = day[0].find('li', {'class': 'on'}).text[0:1]
@@ -60,7 +63,6 @@ class MyWebCrawling:
             story = soup.find('div', {'class': 'detail'}).find('p').text
 
             # 리스트에 추가
-            wd.id_list.append(i)
             wd.thumbnail_list.append(image_url)
             wd.title_list.append(current_title)
             wd.author_list.append(author)
@@ -105,7 +107,7 @@ class MyWebCrawling:
 
                 # 해당 웹툰으로 이동하기
                 webtoon = driver.find_elements(By.CLASS_NAME, "css-qm6qod")[j]
-                action.move_to_element(webtoon).key_down(Keys.COMMAND).click().key_up(Keys.COMMAND).perform()
+                action.move_to_element(webtoon).key_down(Keys.CONTROL).click().key_up(Keys.CONTROL).perform()
                 sleep(2)
                 driver.switch_to.window(driver.window_handles[1])
 
@@ -177,9 +179,11 @@ class MyWebCrawling:
             filename = "kakao" + str(i) + ".csv"
             if os.path.isfile(filename):
                 day_tds.append(ut.get_from_csv(filename))
+                idx += len(day_tds[-1])
                 continue
 
             day_wd = WebtoonData()
+            total_titles = []
 
             # 요일별 페이지에 있는 웹툰들 가져오기 (스크롤해야 보이는 것 까지 포함)
             day = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[i]
@@ -224,6 +228,10 @@ class MyWebCrawling:
                 genre = genre[genre.find("웹툰") + 2:]
                 story = soup.find('div', {'class': 'descriptionBox'}).text
 
+                # 다른 요일에서 이미 추가된거면 스킵하기
+                if title in total_titles:
+                    continue
+
                 # 리스트에 추가
                 day_wd.id_list.append(idx)
                 day_wd.thumbnail_list.append(image_url)
@@ -236,6 +244,7 @@ class MyWebCrawling:
                     day_wd.genre_list.append(genre)
                 day_wd.story_list.append(story)
                 day_wd.platform_list.append("카카오웹툰")
+                total_titles.append(title)
 
                 idx += 1
                 # 다시 메인페이지로 돌아가기
@@ -246,9 +255,8 @@ class MyWebCrawling:
             day_tds.append(td.make_total_data(day_wd))
             ut.make_csv(filename, day_tds[-1])
 
-        # 요일별로 만든 dataframe 모두 합치고 중복 제거하기
+        # 요일별로 만든 dataframe 모두 합치기
         total_td = pd.concat(day_tds)
-        total_td = total_td.drop_duplicates('title')
 
         return total_td
 
