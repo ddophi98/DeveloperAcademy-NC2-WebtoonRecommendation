@@ -10,9 +10,8 @@ from myStyleClustering import MyStyleClustering
 
 naver_csv_filename = "네이버웹툰정보.csv"
 kakao_csv_filename = "카카오웹툰정보.csv"
-vector_filename_form = "vector_data.pickle"
-genre = "소년"
-vector_filename = genre + "_" + vector_filename_form
+clustering_csv_filename = "클러스터링정보.csv"
+vector_filename = "vector_data.pickle"
 images_filename = "images.pickle"
 webtoonName = "나 혼자만 레벨업"
 
@@ -49,49 +48,51 @@ if __name__ == '__main__':
     # 웹툰 카테고리 분류하기
     print("--categorizing start--")
     td.save_category()
-    td.classify_by_category()
     print("--categorizing end--")
-
-    if genre == "전체":
-        current_data = td.total_data
-    else:
-        current_data = td.categorized_data[genre]
 
     # 토큰화 및 벡터화하기 (새로 하기 또는 이미 되어있는 값 불러오기)
     print("--vectorized loading start--")
     if not os.path.isfile(vector_filename):
-        tk = MyTokenize(current_data)
+        tk = MyTokenize(td.total_data)
         vectorized = tk.get_vectorized_data()
         vectorizer = tk.tfidf_vectorizer
         ut.save_data(vector_filename, (vectorized, vectorizer))
     else:
         vectorized, vectorizer = ut.load_data(vector_filename)
     print("--vectorized loading end--")
+    story_ct = MyStoryClustering(vectorized, vectorizer, td.total_data)
 
-    # story에 대한 k-means 클러스터링 하기
     print("--kmeans story clustering start--")
-    story_ct = MyStoryClustering(vectorized, vectorizer, current_data)
-    story_ct.kmeans_cluster()
+    # story에 대한 k-means 클러스터링 하기
+    cluster_labels = [-1 for _ in range(len(td.total_data))]
+    print("\n<적정 k값>")
+    for genre in td.categories:
+        current_data_index = td.total_data.index[td.total_data['genre'] == genre].tolist()
+        current_data_index = list(map(int, current_data_index))
+        cluster_label = story_ct.kmeans_cluster(genre, current_data_index)
+        for i in range(len(current_data_index)):
+            cluster_labels[current_data_index[i]] = cluster_label[i]
+    print()
+    story_ct.data["cluster2"] = cluster_labels
+    ut.make_csv(clustering_csv_filename, story_ct.data)
     print("--kmeans story clustering end--")
-    story_ct.print_cluster_details()
-    story_ct.compare_similarity(webtoonName)
 
     # style에 대한 k-means 클러스터링 하기
-
-    style_ct = MyStyleClustering(td.total_data)
-    print("--images loading start--")
-    if not os.path.isfile(images_filename):
-        thumbnails = style_ct.get_img()
-        ut.save_data(images_filename, thumbnails)
-    else:
-        thumbnails = ut.load_data(images_filename)
-    print("--images loading end--")
-    print("--style extraction start--")
-    style_info_list = style_ct.extract_style(thumbnails)
-    print("--style extraction end--")
-    print("--kmeans style clustering start--")
-    results = style_ct.kmeans_cluster(style_info_list)
-    print("--kmeans style clustering end--")
-    style_ct.print_cluster_details(results)
+    #
+    # style_ct = MyStyleClustering(td.total_data)
+    # print("--images loading start--")
+    # if not os.path.isfile(images_filename):
+    #     thumbnails = style_ct.get_img()
+    #     ut.save_data(images_filename, thumbnails)
+    # else:
+    #     thumbnails = ut.load_data(images_filename)
+    # print("--images loading end--")
+    # print("--style extraction start--")
+    # style_info_list = style_ct.extract_style(thumbnails)
+    # print("--style extraction end--")
+    # print("--kmeans style clustering start--")
+    # results = style_ct.kmeans_cluster(style_info_list)
+    # print("--kmeans style clustering end--")
+    # style_ct.print_cluster_details(results)
 
 
