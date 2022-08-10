@@ -33,11 +33,8 @@ if __name__ == '__main__':
     print("--kakao webtoon info loading start--")
     if not os.path.isfile(kakao_csv_filename):
         # # 이상적인 과정
-        # print("--kakao web crawling start--")
         # kakao_wd = wc.get_kakao_webtton_info()
-        # print("--kakao web crawling end--")
         # kakao_td = td.make_total_data(kakao_wd)
-        # print("--making total dataframe end--")
 
         # 웹 데이터가 로드가 안되는 오류 때문에 요일별로 끊어서 파일 만드는 과정
         kakao_td = wc.get_and_form_kakao_webtton_info_by_day()
