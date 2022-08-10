@@ -24,7 +24,6 @@ class MyStyleClustering:
         new_shape = tf.cast(shape * scale, tf.int32)
         img = tf.image.resize(img, new_shape)
         img = img[tf.newaxis, :]
-        print(np.shape(img))
         return img
 
     # url 로부터 이미지 가져오기
@@ -77,7 +76,7 @@ class StyleContentModel(tf.keras.models.Model):
     style_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
 
     def __init__(self):
-        super(self.StyleContentModel, self).__init__()
+        super(StyleContentModel, self).__init__()
         self.vgg = self.vgg_layers()
         self.vgg.trainable = False
 

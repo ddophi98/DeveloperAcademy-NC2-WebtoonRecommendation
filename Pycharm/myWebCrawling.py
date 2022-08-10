@@ -16,7 +16,7 @@ import os.path
 class MyWebCrawling:
     nw_url = 'https://comic.naver.com/webtoon/weekday'
     kw_url = 'https://page.kakao.com/main?categoryUid=10&subCategoryUid=1002'
-    chromedriver_url = '/Users/ddophi/Desktop/storage/PycharmProjects/SideProjcet-WebtoonRecommendation/Pycharm/chromedriver'
+    chromedriver_url = 'C:/Storage/Storage_Coding/PycharmProjects/SideProjcet-WebtoonRecommendation/Pycharm/chromedriver'
     login_id = 'barezebe119@naver.com'
     login_pw = 'Whiteout00'
 
@@ -195,7 +195,7 @@ class MyWebCrawling:
 
                 # 해당 웹툰으로 이동하기
                 webtoon = driver.find_elements(By.CLASS_NAME, "css-qm6qod")[j]
-                action.move_to_element(webtoon).key_down(Keys.COMMAND).click().key_up(Keys.COMMAND).perform()
+                action.move_to_element(webtoon).key_down(Keys.CONTROL).click().key_up(Keys.CONTROL).perform()
                 sleep(2)
                 driver.switch_to.window(driver.window_handles[1])
 
