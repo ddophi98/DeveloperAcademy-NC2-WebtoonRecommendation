@@ -65,11 +65,10 @@ class MyWebCrawling:
             wd.title_list.append(current_title)
             wd.author_list.append(author)
             wd.day_list.append(day)
-            wd.first_genre_list.append(genre[0])
             if genre[1] == "무협/사극":
-                wd.second_genre_list.append("무협")
+                wd.genre_list.append("무협")
             else:
-                wd.second_genre_list.append(genre[1])
+                wd.genre_list.append(genre[1])
             wd.story_list.append(story)
             wd.platform_list.append("네이버웹툰")
 
@@ -145,10 +144,9 @@ class MyWebCrawling:
                 wd.author_list.append(author)
                 wd.day_list.append(day)
                 if genre == "액션무협":
-                    wd.first_genre_list.append("무협")
+                    wd.genre_list.append("무협")
                 else:
-                    wd.first_genre_list.append(genre)
-                wd.second_genre_list.append("")
+                    wd.genre_list.append(genre)
                 wd.story_list.append(story)
                 wd.platform_list.append("카카오웹툰")
 
@@ -233,10 +231,9 @@ class MyWebCrawling:
                 day_wd.author_list.append(author)
                 day_wd.day_list.append(day)
                 if genre == "액션무협":
-                    day_wd.first_genre_list.append("무협")
+                    day_wd.genre_list.append("무협")
                 else:
-                    day_wd.first_genre_list.append(genre)
-                day_wd.second_genre_list.append("")
+                    day_wd.genre_list.append(genre)
                 day_wd.story_list.append(story)
                 day_wd.platform_list.append("카카오웹툰")
 

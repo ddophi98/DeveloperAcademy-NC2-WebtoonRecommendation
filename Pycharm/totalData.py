@@ -9,8 +9,7 @@ class TotalData:
         "title": [],
         "author": [],
         "day": [],
-        "first_genre": [],
-        "second_genre": [],
+        "genre": [],
         "story": [],
         "platform": [],
     })
@@ -29,8 +28,7 @@ class TotalData:
             "title": [],
             "author": [],
             "day": [],
-            "first_genre": [],
-            "second_genre": [],
+            "genre": [],
             "story": [],
             "platform": [],
         })
@@ -40,8 +38,7 @@ class TotalData:
         my_total_data['title'] = wd.title_list
         my_total_data['author'] = wd.author_list
         my_total_data['day'] = wd.day_list
-        my_total_data['first_genre'] = wd.first_genre_list
-        my_total_data['second_genre'] = wd.second_genre_list
+        my_total_data['genre'] = wd.genre_list
         my_total_data['story'] = wd.story_list
         my_total_data['platform'] = wd.platform_list
 
@@ -54,8 +51,7 @@ class TotalData:
 
     @staticmethod
     def save_category():
-        TotalData.categories = list(set(TotalData.total_data['first_genre'].to_list() + TotalData.total_data['second_genre'].to_list()))
-        TotalData.categories = [i for i in TotalData.categories if str(i) != 'nan']
+        TotalData.categories = list(set(TotalData.total_data['genre']))
         print("웹툰 카테고리: ", TotalData.categories)
 
     @staticmethod
