@@ -40,8 +40,11 @@ class MyStoryClustering:
         return proper_k
 
     # K-means로 군집화시키기
-    def kmeans_cluster(self, genre, data_index):
-        cluster_num = self.get_proper_k(data_index)
+    def kmeans_cluster(self, genre, data_index, k=-1):
+        if k == -1:
+            cluster_num = self.get_proper_k(data_index)
+        else:
+            cluster_num = k
         print(genre + ": " + str(cluster_num))
         kmeans = KMeans(n_clusters=cluster_num, init='k-means++')
         cluster_label = kmeans.fit_predict(self.vectorized[data_index])

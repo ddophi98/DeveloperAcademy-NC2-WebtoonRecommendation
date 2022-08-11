@@ -55,7 +55,7 @@ class MyStyleClustering:
 
             # 모든 썸네일에서 나온 정보들을 한 배열에 저장해놓기
             style_info_list.append(style_info)
-
+        print()
         return style_info_list
 
     def kmeans_cluster(self, style_info_list):
