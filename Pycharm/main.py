@@ -64,35 +64,39 @@ if __name__ == '__main__':
 
     print("--kmeans story clustering start--")
     # story에 대한 k-means 클러스터링 하기
-    cluster_labels = [-1 for _ in range(len(td.total_data))]
     print("\n<적정 k값>")
+    # 전체 웹툰 안에서 클러스터링 하기
+    cluster_labels_for_whole = story_ct.kmeans_cluster("전체", list(range(len(td.total_data))), k=175)
+    # 각 장르 안에서 클러스터링 하기
+    cluster_labels_for_genre = [-1 for _ in range(len(td.total_data))]
     for genre in td.categories:
         current_data_index = td.total_data.index[td.total_data['genre'] == genre].tolist()
         current_data_index = list(map(int, current_data_index))
         cluster_label = story_ct.kmeans_cluster(genre, current_data_index)
         for i in range(len(current_data_index)):
-            cluster_labels[current_data_index[i]] = cluster_label[i]
+            cluster_labels_for_genre[current_data_index[i]] = cluster_label[i]
     print()
-    story_ct.data["cluster2"] = cluster_labels
-    ut.make_csv(clustering_csv_filename, story_ct.data)
+    td.total_data["cluster_story1"] = cluster_labels_for_whole
+    td.total_data["cluster_story2"] = cluster_labels_for_genre
     print("--kmeans story clustering end--")
 
     # style에 대한 k-means 클러스터링 하기
-    #
-    # style_ct = MyStyleClustering(td.total_data)
-    # print("--images loading start--")
-    # if not os.path.isfile(images_filename):
-    #     thumbnails = style_ct.get_img()
-    #     ut.save_data(images_filename, thumbnails)
-    # else:
-    #     thumbnails = ut.load_data(images_filename)
-    # print("--images loading end--")
-    # print("--style extraction start--")
-    # style_info_list = style_ct.extract_style(thumbnails)
-    # print("--style extraction end--")
-    # print("--kmeans style clustering start--")
-    # results = style_ct.kmeans_cluster(style_info_list)
-    # print("--kmeans style clustering end--")
-    # style_ct.print_cluster_details(results)
+    style_ct = MyStyleClustering(td.total_data)
+    print("--images loading start--")
+    if not os.path.isfile(images_filename):
+        thumbnails = style_ct.get_img()
+        ut.save_data(images_filename, thumbnails)
+    else:
+        thumbnails = ut.load_data(images_filename)
+    print("--images loading end--")
+    print("--style extraction start--")
+    style_info_list = style_ct.extract_style(thumbnails)
+    print("--style extraction end--")
+    print("--kmeans style clustering start--")
+    cluster_labels = style_ct.kmeans_cluster(style_info_list)
+    td.total_data["cluster_style"] = cluster_labels
+    print("--kmeans style clustering end--")
+
+    ut.make_csv(clustering_csv_filename, story_ct.data)
 
 

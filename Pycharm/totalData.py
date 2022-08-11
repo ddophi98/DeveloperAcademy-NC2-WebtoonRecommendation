@@ -5,8 +5,9 @@ class TotalData:
     # 전체 정보를 저장할 변수
     total_data = pd.DataFrame({
         "id": [],
-        "cluster1": [],
-        "cluster2": [],
+        "cluster_story1": [],
+        "cluster_story2": [],
+        "cluster_style": [],
         "thumbnail": [],
         "title": [],
         "author": [],
@@ -56,6 +57,7 @@ class TotalData:
     def save_category():
         TotalData.categories = list(set(TotalData.total_data['genre']))
         print("\n<웹툰 카테고리 종류 및 개수>")
+        print("전체: " + str(len(TotalData.total_data)))
         for genre in TotalData.categories:
             print(genre + ": " + str(len(TotalData.total_data.index[TotalData.total_data['genre'] == genre])))
         print()
