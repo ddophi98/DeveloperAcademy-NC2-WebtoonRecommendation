@@ -1,7 +1,5 @@
 import tensorflow as tf
 import numpy as np
-import pandas as pd
-import math
 from sklearn.cluster import KMeans
 
 class MyStyleClustering:
@@ -34,6 +32,7 @@ class MyStyleClustering:
             print("\r" + str(i + 1) + "/" + str(thumbnails_size), end="")
             img = tf.keras.utils.get_file('thumbnail' + str(i + 1) + '.jpg', thumbnail)
             images.append(self.resize_img(img))
+        print()
         return images
 
     def extract_style(self, images):
@@ -58,8 +57,8 @@ class MyStyleClustering:
         print()
         return style_info_list
 
-    def kmeans_cluster(self, style_info_list):
-        kmeans = KMeans(n_clusters=10)
+    def kmeans_cluster(self, style_info_list, k=10):
+        kmeans = KMeans(n_clusters=k)
         pred = kmeans.fit_predict(style_info_list)
         return pred
 
