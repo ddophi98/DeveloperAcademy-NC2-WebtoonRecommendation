@@ -15,6 +15,7 @@ class MyStoryClustering:
         self.vectorized = vectorized
         self.vectorizer = vectorizer
         self.data = total_data
+        self.kmeans = KMeans()
 
         # 한글 폰트 설정
         font_path = "C:/Windows/Fonts/batang.ttc"
@@ -46,19 +47,19 @@ class MyStoryClustering:
         else:
             cluster_num = k
         print(genre + ": " + str(cluster_num))
-        kmeans = KMeans(n_clusters=cluster_num, init='k-means++')
-        cluster_label = kmeans.fit_predict(self.vectorized[data_index])
+        self.kmeans = KMeans(n_clusters=cluster_num, init='k-means++')
+        cluster_label = self.kmeans.fit_predict(self.vectorized[data_index])
         return cluster_label
 
     # 군집별 핵심단어 추출하기
-    def get_cluster_details(self):
+    def get_cluster_details(self, cluster_nums):
         feature_names = self.vectorizer.get_feature_names_out()
         cluster_details = {}
         # 각 클러스터 레이블별 feature들의 center값들 내림차순으로 정렬 후의 인덱스를 반환
         center_feature_idx = self.kmeans.cluster_centers_.argsort()[:, ::-1]
 
         # 개별 클러스터 레이블별로
-        for cluster_num in range(self.cluster_num):
+        for cluster_num in range(cluster_nums):
             # 개별 클러스터별 정보를 담을 empty dict할당
             cluster_details[cluster_num] = {}
             cluster_details[cluster_num]['cluster'] = cluster_num
@@ -84,8 +85,8 @@ class MyStoryClustering:
         return cluster_details
 
     # 군집별 핵심단어 출력해보기
-    def print_cluster_details(self):
-        cluster_details = self.get_cluster_details()
+    def print_cluster_details(self, cluster_nums):
+        cluster_details = self.get_cluster_details(cluster_nums)
         for cluster_num, cluster_detail in cluster_details.items():
             print()
             for i in range(len(cluster_detail['title'])):
