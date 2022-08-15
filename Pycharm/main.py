@@ -1,5 +1,7 @@
 import os.path
 
+import pandas as pd
+
 from totalData import TotalData as td
 from myWebCrawling import MyWebCrawling
 from myUtil import MyUtil as ut
@@ -10,7 +12,8 @@ from myStyleClustering import MyStyleClustering
 
 naver_csv_filename = "네이버웹툰정보.csv"
 kakao_csv_filename = "카카오웹툰정보.csv"
-clustering_csv_filename = "클러스터링정보.csv"
+cluster_csv_filename = "클러스터정보.csv"
+cluster_detail_csv_filename = "클러스터상위단어.csv"
 vector_filename = "vector_data.pickle"
 images_filename = "images.pickle"
 
@@ -42,6 +45,7 @@ def do_web_crawling():
     td.merge_total_data((naver_td, kakao_td))
     # 웹툰 카테고리 분류하기
     td.save_category()
+
 # 토큰화 및 벡터화하기 (새로 하기 또는 저장된 데이터 불러오기)
 def do_tokenize_and_vectorize():
     print("--vectorized start--")
@@ -55,12 +59,20 @@ def do_tokenize_and_vectorize():
     print("--vectorized end--")
     story_ct = MyStoryClustering(vectorized, vectorizer, td.total_data)
     return story_ct
+
 # story에 대한 k-means 클러스터링 하기
 def do_clustering_by_story(story_ct, k_for_total=175):
     print("--kmeans story clustering start--")
     print("\n<적정 k값>")
+
+    cluster_details_list = []
+
     # 전체 웹툰 안에서 클러스터링 하기
-    cluster_labels_for_whole = story_ct.kmeans_cluster("전체", list(range(len(td.total_data))), k=k_for_total)
+    total_index = list(range(len(td.total_data)))
+    cluster_labels_for_whole = story_ct.kmeans_cluster("전체", total_index, k=k_for_total)
+    cluster_details = story_ct.get_cluster_details("전체")
+    cluster_details_list.append(cluster_details)
+
     # 각 장르 안에서 클러스터링 하기
     cluster_labels_for_genre = [-1 for _ in range(len(td.total_data))]
     for genre in td.categories:
@@ -69,10 +81,16 @@ def do_clustering_by_story(story_ct, k_for_total=175):
         cluster_label = story_ct.kmeans_cluster(genre, current_data_index)
         for i in range(len(current_data_index)):
             cluster_labels_for_genre[current_data_index[i]] = cluster_label[i]
+        cluster_details = story_ct.get_cluster_details(genre)
+        cluster_details_list.append(cluster_details)
+
     print()
     td.total_data["cluster_story1"] = cluster_labels_for_whole
     td.total_data["cluster_story2"] = cluster_labels_for_genre
+    td.cluster_details = pd.concat(cluster_details_list)
+
     print("--kmeans story clustering end--")
+
 # style에 대한 k-means 클러스터링 하기
 def do_clustering_by_style():
     style_ct = MyStyleClustering(td.total_data)
@@ -98,7 +116,7 @@ if __name__ == '__main__':
     do_web_crawling()
     story_clustering = do_tokenize_and_vectorize()
     do_clustering_by_story(story_clustering, k_for_total=175)
-    do_clustering_by_style()
-    ut.make_csv(clustering_csv_filename, td.total_data)
-
+    # do_clustering_by_style()
+    ut.make_csv(cluster_csv_filename, td.total_data)
+    ut.make_csv(cluster_detail_csv_filename, td.cluster_details)
 

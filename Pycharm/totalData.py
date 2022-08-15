@@ -17,6 +17,13 @@ class TotalData:
         "platform": [],
     })
 
+    # 각 클러스터별 핵심 단어를 저장할 변수
+    cluster_details = pd.DataFrame({
+        "genre": [],
+        "cluster_num": [],
+        "words": [],
+    })
+
     # 카테고리 목록
     categories = []
 
@@ -47,11 +54,11 @@ class TotalData:
 
     @staticmethod
     def merge_total_data(tds):
-        for td in tds:
-            TotalData.total_data = pd.concat([TotalData.total_data, td])
+        TotalData.total_data = pd.concat(tds)
         first_td_len = len(tds[0])
         TotalData.total_data['id'] = TotalData.total_data['id'][:first_td_len].tolist() + [x + first_td_len for x in TotalData.total_data['id'][first_td_len:].tolist()]
         TotalData.total_data.set_index('id', inplace=True)
+        TotalData.total_data = TotalData.total_data.loc[:, ~TotalData.total_data.columns.str.contains('^Unnamed')]
 
     @staticmethod
     def save_category():
