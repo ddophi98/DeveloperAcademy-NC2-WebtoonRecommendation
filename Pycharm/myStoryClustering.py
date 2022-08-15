@@ -9,7 +9,7 @@ import seaborn as sns
 
 
 class MyStoryClustering:
-    top_n_features = 5
+    top_n_features = 3
 
     def __init__(self, vectorized, vectorizer, total_data):
         self.vectorized = vectorized
@@ -47,56 +47,36 @@ class MyStoryClustering:
         else:
             cluster_num = k
         print(genre + ": " + str(cluster_num))
-        self.kmeans = KMeans(n_clusters=cluster_num, init='k-means++')
+        self.kmeans = KMeans(n_clusters=cluster_num)
         cluster_label = self.kmeans.fit_predict(self.vectorized[data_index])
         return cluster_label
 
     # 군집별 핵심단어 추출하기
-    def get_cluster_details(self, cluster_nums):
+    def get_cluster_details(self, genre):
+        # 각 클러스터별 핵심 단어를 저장할 변수
+        cluster_details = pd.DataFrame({
+            "genre": [],
+            "cluster_num": [],
+            "words": [],
+        })
+
         feature_names = self.vectorizer.get_feature_names_out()
-        cluster_details = {}
+
         # 각 클러스터 레이블별 feature들의 center값들 내림차순으로 정렬 후의 인덱스를 반환
         center_feature_idx = self.kmeans.cluster_centers_.argsort()[:, ::-1]
 
-        # 개별 클러스터 레이블별로
-        for cluster_num in range(cluster_nums):
-            # 개별 클러스터별 정보를 담을 empty dict할당
-            cluster_details[cluster_num] = {}
-            cluster_details[cluster_num]['cluster'] = cluster_num
+        # 각 feature별 center값들 정렬한 인덱스 중 상위 값들 추출
+        top_features = []
+        for cluster_num in range(len(center_feature_idx)):
+            top_feature_idx = center_feature_idx[cluster_num, :self.top_n_features]
+            top_feature = [feature_names[idx] for idx in top_feature_idx]
+            top_features.append(top_feature)
 
-            # 각 feature별 center값들 정렬한 인덱스 중 상위 값들 추출
-            top_ftr_idx = center_feature_idx[cluster_num, :self.top_n_features]
-            top_ftr = [feature_names[idx] for idx in top_ftr_idx]
-            # top_ftr_idx를 활용해서 상위 10개 feature들의 center값들 반환
-            # 반환하게 되면 array이기 떄문에 리스트로바꾸기
-            top_ftr_val = self.kmeans.cluster_centers_[cluster_num, top_ftr_idx].tolist()
-            # cluster_details 딕셔너리에다가 개별 군집 정보 넣어주기
-            cluster_details[cluster_num]['top_features'] = top_ftr
-            cluster_details[cluster_num]['top_featrues_value'] = top_ftr_val
-            # 해당 cluster_num으로 분류된 파일명(문서들) 넣어주기
-            title = self.data[self.data['cluster_label'] == cluster_num]['title']
-            story = self.data[self.data['cluster_label'] == cluster_num]['story']
-            # filenames가 df으로 반환되기 떄문에 값들만 출력해서 array->list로 변환
-            title = title.values.tolist()
-            story = story.values.tolist()
-            cluster_details[cluster_num]['title'] = title
-            cluster_details[cluster_num]['story'] = story
+        cluster_details['genre'] = [genre for _ in range(len(center_feature_idx))]
+        cluster_details['cluster_num'] = range(len(center_feature_idx))
+        cluster_details['words'] = top_features
 
         return cluster_details
-
-    # 군집별 핵심단어 출력해보기
-    def print_cluster_details(self, cluster_nums):
-        cluster_details = self.get_cluster_details(cluster_nums)
-        for cluster_num, cluster_detail in cluster_details.items():
-            print()
-            for i in range(len(cluster_detail['title'])):
-                print()
-                print(f"Cluster Num: {cluster_num}")
-                print(cluster_detail['top_features'])
-                print("제목 - " + cluster_detail['title'][i])
-                print(cluster_detail['story'][i])
-                print('-' * 40)
-            print('\n\n' + '~' * 160 + '\n\n')
 
     # 유사도 그래프로 비교해보기
     def compare_similarity(self, item_title):
