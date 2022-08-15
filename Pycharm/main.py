@@ -116,7 +116,7 @@ if __name__ == '__main__':
     do_web_crawling()
     story_clustering = do_tokenize_and_vectorize()
     do_clustering_by_story(story_clustering, k_for_total=175)
-    # do_clustering_by_style()
+    do_clustering_by_style()
     ut.make_csv(cluster_csv_filename, td.total_data)
     ut.make_csv(cluster_detail_csv_filename, td.cluster_details)
 

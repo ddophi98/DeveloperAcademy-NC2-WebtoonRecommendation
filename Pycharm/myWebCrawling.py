@@ -59,6 +59,7 @@ class MyWebCrawling:
             image_url = soup.find('div', {'class': 'thumb'}).find('a').find('img')
             image_url = image_url['src']
             author = soup.find('span', {'class': 'wrt_nm'}).text[8:]
+            author = author.replace(' / ', ', ')
             genre = soup.find('span', {'class': 'genre'}).text.split(", ")
             story = soup.find('div', {'class': 'detail'}).find('p').text
 
@@ -80,86 +81,6 @@ class MyWebCrawling:
 
         return wd
 
-    # 카카오 웹툰 각각의 정보 가져오기
-    def get_kakao_webtton_info(self):
-        wd = WebtoonData()
-        driver = webdriver.Chrome(self.chromedriver_url)
-        action = ActionChains(driver)
-        driver.get(self.kw_url)
-        sleep(3)
-        # 로그인 해야 들어갈 수 있는 것들 때문에 일단 로그인하기
-        self.login_on_kakao_page(driver)
-
-        # 완결 웹툰은 일단 제외하고 요일별 페이지 가져오기
-        days = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[:-1]
-
-        idx = 0
-        for i in range(len(days)):
-            # 요일별 페이지에 있는 웹툰들 가져오기 (스크롤해야 보이는 것 까지 포함)
-            day = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[i]
-            action.move_to_element(day).click().perform()
-            self.do_scroll_down(10, driver)
-            webtoons = driver.find_elements(By.CLASS_NAME, "css-qm6qod")
-
-            # 웹툰별로 정보 저장하기
-            for j in range(len(webtoons)):
-                print("\rday[" + str(i) + "] - process: " + str(j + 1) + " / " + str(len(webtoons)), end="")
-
-                # 해당 웹툰으로 이동하기
-                webtoon = driver.find_elements(By.CLASS_NAME, "css-qm6qod")[j]
-                action.move_to_element(webtoon).key_down(Keys.CONTROL).click().key_up(Keys.CONTROL).perform()
-                sleep(2)
-                driver.switch_to.window(driver.window_handles[1])
-
-                # 이미지 정보 먼저 저장하기
-                html = driver.page_source
-                soup = bs(html, 'html.parser')
-                image_url = soup.find('div', {'class': 'css-1y42t5x'}).find('img')
-                image_url = image_url['src']
-                image_url = "https:" + image_url
-
-                # 작품소개 창 열기
-                driver.find_element(By.CLASS_NAME, "css-nxuz68").click()
-
-                # 현재 창에서 데이터 읽기
-                sleep(0.5)
-                html = driver.page_source
-                soup = bs(html, 'html.parser')
-
-                title = soup.find('h2', {'class': 'css-jgjrt'}).text
-                day = soup.find_all('div', {'class': 'css-7a7cma'})[0].text
-                day = day[:day.find(" 연재")]
-                author = soup.find_all('div', {'class': 'css-7a7cma'})[1].text
-                genre = soup.find('div', {'class': 'infoBox'})
-                genre = genre.find_all('div', {'class': 'jsx-3755015728'})[2].text
-                genre = genre[genre.find("웹툰")+2:]
-                story = soup.find('div', {'class': 'descriptionBox'}).text
-
-                # 다른 요일에서 이미 추가된거면 스킵하기
-                if title in wd.title_list:
-                    continue
-
-                # 리스트에 추가
-                wd.id_list.append(idx)
-                wd.thumbnail_list.append(image_url)
-                wd.title_list.append(title)
-                wd.author_list.append(author)
-                wd.day_list.append(day)
-                if genre == "액션무협":
-                    wd.genre_list.append("무협")
-                else:
-                    wd.genre_list.append(genre)
-                wd.story_list.append(story)
-                wd.platform_list.append("카카오웹툰")
-
-                idx += 1
-                # 다시 메인페이지로 돌아가기
-                driver.close()
-                driver.switch_to.window(driver.window_handles[0])
-                sleep(0.5)
-
-        return wd
-
     # 카카오 웹툰 각각의 정보 가져오고 파일로까지 저장하기 (요일 단위로)
     def get_and_form_kakao_webtton_info_by_day(self):
         driver = webdriver.Chrome(self.chromedriver_url)
@@ -173,10 +94,12 @@ class MyWebCrawling:
         days = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[:-1]
 
         day_tds = []
+        filenames = []
 
         idx = 0
         for i in range(len(days)):
             filename = "kakao" + str(i) + ".csv"
+            filenames.append(filename)
             if os.path.isfile(filename):
                 day_tds.append(ut.get_from_csv(filename))
                 idx += len(day_tds[-1])
@@ -223,6 +146,7 @@ class MyWebCrawling:
                 day = soup.find_all('div', {'class': 'css-7a7cma'})[0].text
                 day = day[:day.find(" 연재")]
                 author = soup.find_all('div', {'class': 'css-7a7cma'})[1].text
+                author = author.replace(',', ', ')
                 genre = soup.find('div', {'class': 'infoBox'})
                 genre = genre.find_all('div', {'class': 'jsx-3755015728'})[2].text
                 genre = genre[genre.find("웹툰") + 2:]
@@ -255,8 +179,10 @@ class MyWebCrawling:
             day_tds.append(td.make_total_data(day_wd))
             ut.make_csv(filename, day_tds[-1])
 
-        # 요일별로 만든 dataframe 모두 합치기
+        # 요일별로 만든 dataframe 모두 합치고 기존 것들은 지우기
         total_td = pd.concat(day_tds)
+        for filename in filenames:
+            ut.delete_csv(filename)
 
         return total_td
 
