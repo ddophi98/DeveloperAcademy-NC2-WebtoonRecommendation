@@ -1,5 +1,6 @@
 import pandas as pd
 import pickle as pk
+import os
 
 
 class MyUtil:
@@ -12,6 +13,12 @@ class MyUtil:
     @staticmethod
     def get_from_csv(filename):
         return pd.read_csv(filename)
+
+    # CSV 파일을 지우기
+    @staticmethod
+    def delete_csv(filename):
+        if os.path.isfile(filename):
+            os.remove(filename)
 
     # 특정 데이터를 파일에 저장해놓기
     @staticmethod
