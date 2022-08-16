@@ -42,7 +42,7 @@ def do_web_crawling():
     print("--kakao webtoon crawling end--")
 
     # 가져온 데이터들 합치기
-    td.merge_total_data((naver_td, kakao_td))
+    td.merge_total_data([naver_td, kakao_td])
     # 웹툰 카테고리 분류하기
     td.save_category()
 
