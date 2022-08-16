@@ -5,21 +5,27 @@ class TotalData:
     # 전체 정보를 저장할 변수
     total_data = pd.DataFrame({
         "id": [],
+        "cluster_story1": [],
+        "cluster_story2": [],
+        "cluster_style": [],
         "thumbnail": [],
         "title": [],
         "author": [],
         "day": [],
-        "first_genre": [],
-        "second_genre": [],
+        "genre": [],
         "story": [],
         "platform": [],
     })
 
+    # 각 클러스터별 핵심 단어를 저장할 변수
+    cluster_details = pd.DataFrame({
+        "genre": [],
+        "cluster_num": [],
+        "words": [],
+    })
+
     # 카테고리 목록
     categories = []
-
-    # 카테고리 별로 나눈 데이터
-    categorized_data = {}
 
     @staticmethod
     def make_total_data(wd):
@@ -29,8 +35,7 @@ class TotalData:
             "title": [],
             "author": [],
             "day": [],
-            "first_genre": [],
-            "second_genre": [],
+            "genre": [],
             "story": [],
             "platform": [],
         })
@@ -40,49 +45,27 @@ class TotalData:
         my_total_data['title'] = wd.title_list
         my_total_data['author'] = wd.author_list
         my_total_data['day'] = wd.day_list
-        my_total_data['first_genre'] = wd.first_genre_list
-        my_total_data['second_genre'] = wd.second_genre_list
+        my_total_data['genre'] = wd.genre_list
         my_total_data['story'] = wd.story_list
         my_total_data['platform'] = wd.platform_list
+        # my_total_data.set_index('id', inplace=True)
 
         return my_total_data
 
     @staticmethod
     def merge_total_data(tds):
-        for td in tds:
-            TotalData.total_data = pd.concat([TotalData.total_data, td])
+        TotalData.total_data = pd.concat(tds)
+        first_td_len = len(tds[0])
+        TotalData.total_data['id'] = TotalData.total_data['id'][:first_td_len].tolist() + [x + first_td_len for x in TotalData.total_data['id'][first_td_len:].tolist()]
+        TotalData.total_data.set_index('id', inplace=True)
+        TotalData.total_data = TotalData.total_data.loc[:, ~TotalData.total_data.columns.str.contains('^Unnamed')]
 
     @staticmethod
     def save_category():
-        TotalData.categories = list(set(TotalData.total_data['first_genre'].to_list() + TotalData.total_data['second_genre'].to_list()))
-        TotalData.categories = [i for i in TotalData.categories if str(i) != 'nan']
-        print("웹툰 카테고리: ", TotalData.categories)
+        TotalData.categories = list(set(TotalData.total_data['genre']))
+        print("\n<웹툰 카테고리 종류 및 개수>")
+        print("전체: " + str(len(TotalData.total_data)))
+        for genre in TotalData.categories:
+            print(genre + ": " + str(len(TotalData.total_data.index[TotalData.total_data['genre'] == genre])))
+        print()
 
-    @staticmethod
-    def classify_by_category():
-        categorized = TotalData.categorized_data
-        for category in TotalData.categories:
-            TotalData.categorized_data[category] = pd.DataFrame({
-                                            "id": [],
-                                            "thumbnail": [],
-                                            "title": [],
-                                            "author": [],
-                                            "day": [],
-                                            "story": [],
-                                            "platform": [],
-                                        })
-            idx = 0
-            for _, row in TotalData.total_data.iterrows():
-                if category in (row['first_genre'], row['second_genre']):
-                    new_data = pd.DataFrame({
-                        'id': [row['id']],
-                        "thumbnail": [row['thumbnail']],
-                        'title': [row['title']],
-                        'author': [row['author']],
-                        'day': [row['day']],
-                        'story': [row['story']],
-                        'platform': [row['platform']]
-                    }, index=[idx])
-                    idx += 1
-                    categorized[category] = categorized[category].append(new_data)
-            print(category + " 개수: " + str(len(categorized[category])))
