@@ -30,6 +30,7 @@ class MyWebCrawling:
         driver.get(self.nw_url)
 
         # 각각의 웹툰 정보 수집 시작
+        idx = 0
         for i in range(len(title)):
             sleep(0.5)
             print("\rprocess: " + str(i + 1) + " / " + str(len(title)), end="")
@@ -40,9 +41,6 @@ class MyWebCrawling:
             # 이동한 페이지 주소 읽고 파싱
             html = driver.page_source
             soup = bs(html, 'html.parser')
-
-            # 아이디 기록
-            wd.id_list.append(i)
 
             # 요일 수집
             day = soup.find_all('ul', {'class': 'category_tab'})
@@ -64,6 +62,7 @@ class MyWebCrawling:
             story = soup.find('div', {'class': 'detail'}).find('p').text
 
             # 리스트에 추가
+            wd.id_list.append(idx)
             wd.thumbnail_list.append(image_url)
             wd.title_list.append(current_title)
             wd.author_list.append(author)
@@ -76,9 +75,11 @@ class MyWebCrawling:
             wd.platform_list.append("네이버웹툰")
 
             # 뒤로 가기
+            idx += 1
             driver.back()
             sleep(0.5)
 
+        print()
         return wd
 
     # 카카오 웹툰 각각의 정보 가져오고 파일로까지 저장하기 (요일 단위로)
@@ -184,6 +185,7 @@ class MyWebCrawling:
         for filename in filenames:
             ut.delete_csv(filename)
 
+        print()
         return total_td
 
     # 카카오 페이지에 로그인 하기

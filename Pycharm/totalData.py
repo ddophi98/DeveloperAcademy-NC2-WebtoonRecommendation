@@ -48,7 +48,7 @@ class TotalData:
         my_total_data['genre'] = wd.genre_list
         my_total_data['story'] = wd.story_list
         my_total_data['platform'] = wd.platform_list
-        my_total_data.set_index('id', inplace=True)
+        # my_total_data.set_index('id', inplace=True)
 
         return my_total_data
 
