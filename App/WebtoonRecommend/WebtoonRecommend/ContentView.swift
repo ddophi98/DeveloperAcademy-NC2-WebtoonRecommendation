@@ -8,25 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    var isFinishSavingWebtoonAndImage: Bool
-    var isFinishSavingClusterWord: Bool
-    
-    init() {
-        isFinishSavingWebtoonAndImage = false
-        isFinishSavingClusterWord = false
-        
-        FirebaseTool.instance.saveWebtoonAndImage {
-            print(WebtoonData.instance.getWebtoon()[0].title)
-        }
-        FirebaseTool.instance.saveClusterWord {
-            isFinishSavingClusterWord = true
-            print(WebtoonData.instance.getClusterWords()[0].words[0])
-        }
-    }
+    @StateObject var webtoonData = WebtoonData()
     
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            if  webtoonData.isFinishSavingAll {
+                Text("Finish!")
+                    .padding()
+            }else{
+                Text("Not yet")
+                    .padding()
+            }
+        }.onAppear(){
+            webtoonData.initInfo()
+        }
     }
 }
 

@@ -5,13 +5,35 @@
 //  Created by 김동락 on 2022/08/17.
 //
 
-import UIKit
+import SwiftUI
 
-class WebtoonData {
-    static let instance = WebtoonData()
-    
+class WebtoonData: ObservableObject {
     private var webtoons = [Webtoon]()
     private var clusterWords = [ClusterWord]()
+    private var isFinishSavingWebtoonAndImage = false
+    private var isFinishSavingClusterWord = false
+    
+    @Published var isFinishSavingAll = false
+    
+    // 웹툰 정보 가져오기
+    func initInfo() {
+        let firebaseTool = FirebaseTool(webtoonData: self)
+        
+        firebaseTool.saveWebtoonAndImage {
+            self.isFinishSavingWebtoonAndImage = true
+//            print(WebtoonData.instance.getWebtoon()[0].title)
+            if self.isFinishSavingClusterWord {
+                self.isFinishSavingAll = true
+            }
+        }
+        firebaseTool.saveClusterWord {
+            self.isFinishSavingClusterWord = true
+//            print(WebtoonData.instance.getClusterWords()[0].words[0])
+            if self.isFinishSavingWebtoonAndImage {
+                self.isFinishSavingAll = true
+            }
+        }
+    }
     
     // 웹툰 배열에 추가하기
     func addWebtoon(jsonData: WebtoonJson, thumbnail: Data?){
@@ -40,7 +62,7 @@ class WebtoonData {
             clusterByStory2: jsonData.clusterByStory2,
             clusterByStyle: jsonData.clusterByStyle
         )
-        WebtoonData.instance.webtoons.append(newWebtoon)
+        self.webtoons.append(newWebtoon)
     }
     
     // 웹툰 배열 가져오기
@@ -61,7 +83,7 @@ class WebtoonData {
             clusterNum: jsonData.clusterNum,
             words: words
         )
-        WebtoonData.instance.clusterWords.append(newClusterWords)
+        self.clusterWords.append(newClusterWords)
     }
     
     // 단어 배열 가져오기
