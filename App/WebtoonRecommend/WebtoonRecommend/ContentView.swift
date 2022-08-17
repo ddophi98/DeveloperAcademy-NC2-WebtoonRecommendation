@@ -8,14 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    var isFinishSavingWebtoonAndImage: Bool
+    var isFinishSavingClusterWord: Bool
+    
     init() {
-        FirebaseTool.instance.getWebtoon {
-            let webtoons = WebtoonData.instance.webtoons
-            print(webtoons[0].title)
+        isFinishSavingWebtoonAndImage = false
+        isFinishSavingClusterWord = false
+        
+        FirebaseTool.instance.saveWebtoonAndImage {
+            print(WebtoonData.instance.getWebtoon()[0].title)
         }
-        FirebaseTool.instance.getClusterWord {
-            let clusterWords = WebtoonData.instance.clusterWords
-            print(clusterWords[3].words)
+        FirebaseTool.instance.saveClusterWord {
+            isFinishSavingClusterWord = true
+            print(WebtoonData.instance.getClusterWords()[0].words[0])
         }
     }
     
