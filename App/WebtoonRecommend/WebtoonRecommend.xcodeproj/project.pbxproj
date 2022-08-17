@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3CA81860714B2EA7F67F780F /* Pods_WebtoonRecommend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C233AC6CFB38824DD678C4D4 /* Pods_WebtoonRecommend.framework */; };
+		BC7CCEF128ACB0290055E771 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */; };
 		BC8DD30328AB716900B27840 /* WebtoonRecommendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */; };
 		BC8DD30528AB716900B27840 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30428AB716900B27840 /* ContentView.swift */; };
 		BC8DD30728AB716A00B27840 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC8DD30628AB716A00B27840 /* Assets.xcassets */; };
@@ -14,11 +16,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F86F5B3704A11141D7510AE /* Pods-WebtoonRecommend.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebtoonRecommend.release.xcconfig"; path = "Target Support Files/Pods-WebtoonRecommend/Pods-WebtoonRecommend.release.xcconfig"; sourceTree = "<group>"; };
+		BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BC8DD2FF28AB716900B27840 /* WebtoonRecommend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebtoonRecommend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebtoonRecommendApp.swift; sourceTree = "<group>"; };
 		BC8DD30428AB716900B27840 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BC8DD30628AB716A00B27840 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC8DD30928AB716A00B27840 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C233AC6CFB38824DD678C4D4 /* Pods_WebtoonRecommend.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebtoonRecommend.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC24254DD56ABE31F0A7BF40 /* Pods-WebtoonRecommend.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebtoonRecommend.debug.xcconfig"; path = "Target Support Files/Pods-WebtoonRecommend/Pods-WebtoonRecommend.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,17 +32,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CA81860714B2EA7F67F780F /* Pods_WebtoonRecommend.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F0A87C72045860C02BE6C16 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C233AC6CFB38824DD678C4D4 /* Pods_WebtoonRecommend.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BC8DD2F628AB716900B27840 = {
 			isa = PBXGroup;
 			children = (
 				BC8DD30128AB716900B27840 /* WebtoonRecommend */,
 				BC8DD30028AB716900B27840 /* Products */,
+				C0850E05DB84ECFF4B598BD1 /* Pods */,
+				2F0A87C72045860C02BE6C16 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,6 +71,7 @@
 				BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */,
 				BC8DD30428AB716900B27840 /* ContentView.swift */,
 				BC8DD30628AB716A00B27840 /* Assets.xcassets */,
+				BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */,
 				BC8DD30828AB716A00B27840 /* Preview Content */,
 			);
 			path = WebtoonRecommend;
@@ -67,6 +85,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		C0850E05DB84ECFF4B598BD1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CC24254DD56ABE31F0A7BF40 /* Pods-WebtoonRecommend.debug.xcconfig */,
+				6F86F5B3704A11141D7510AE /* Pods-WebtoonRecommend.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -74,9 +102,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BC8DD30D28AB716A00B27840 /* Build configuration list for PBXNativeTarget "WebtoonRecommend" */;
 			buildPhases = (
+				6B2F55AE76780855A8AF49EB /* [CP] Check Pods Manifest.lock */,
 				BC8DD2FB28AB716900B27840 /* Sources */,
 				BC8DD2FC28AB716900B27840 /* Frameworks */,
 				BC8DD2FD28AB716900B27840 /* Resources */,
+				91F6E94FBCDAF8B55970833B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -127,10 +157,53 @@
 			files = (
 				BC8DD30A28AB716A00B27840 /* Preview Assets.xcassets in Resources */,
 				BC8DD30728AB716A00B27840 /* Assets.xcassets in Resources */,
+				BC7CCEF128ACB0290055E771 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6B2F55AE76780855A8AF49EB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WebtoonRecommend-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		91F6E94FBCDAF8B55970833B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WebtoonRecommend/Pods-WebtoonRecommend-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WebtoonRecommend/Pods-WebtoonRecommend-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WebtoonRecommend/Pods-WebtoonRecommend-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BC8DD2FB28AB716900B27840 /* Sources */ = {
@@ -261,6 +334,7 @@
 		};
 		BC8DD30E28AB716A00B27840 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC24254DD56ABE31F0A7BF40 /* Pods-WebtoonRecommend.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -290,6 +364,7 @@
 		};
 		BC8DD30F28AB716A00B27840 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6F86F5B3704A11141D7510AE /* Pods-WebtoonRecommend.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
