@@ -9,14 +9,17 @@ import FirebaseFirestore
 import FirebaseStorage
 
 class FirebaseTool {
-    static let instance = FirebaseTool()
-    
     private let decoder = JSONDecoder()
     private let webtoonRef = Firestore.firestore().collection("webtoonInfo")
     private let clusterWordRef = Firestore.firestore().collection("clusterWord")
     private let storagePath = "gs://webtoonrecommendation.appspot.com/thumbnails/"
     private let storage = Storage.storage()
+    private let webtoonData: WebtoonData
     private var size = -1
+    
+    init(webtoonData: WebtoonData) {
+        self.webtoonData = webtoonData
+    }
     
     // 웹툰 정보 및 썸네일 사진 저장하기
     func saveWebtoonAndImage(completion: @escaping ()->Void) {
@@ -24,16 +27,15 @@ class FirebaseTool {
             if !isError1 {
                 self.getThumbnail() { (isError2, thumbnailArr) in
                     for (webtoon, thumbnail) in zip(webtoonArr, thumbnailArr) {
-                        WebtoonData.instance.addWebtoon(jsonData: webtoon, thumbnail: thumbnail)
+                        self.webtoonData.addWebtoon(jsonData: webtoon, thumbnail: thumbnail)
                     }
-                    print(isError2)
-                    print(webtoonArr.count)
-                    print(thumbnailArr.count)
-                    print("wow!!")
                     completion()
                 }
             }
         }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//            completion()
+//        }
     }
     
     // 클러스터 단어 저장하기
@@ -41,11 +43,14 @@ class FirebaseTool {
         getClusterWord() { (isError, clusterWordArr) in
             if !isError {
                 for clusterWord in clusterWordArr {
-                    WebtoonData.instance.addClusterWords(jsonData: clusterWord)
+                    self.webtoonData.addClusterWords(jsonData: clusterWord)
                 }
                 completion()
             }
         }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+//            completion()
+//        }
     }
     
     // 파이어베이스에서 웹툰 정보 가져오기
