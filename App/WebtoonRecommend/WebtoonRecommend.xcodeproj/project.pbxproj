@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3CA81860714B2EA7F67F780F /* Pods_WebtoonRecommend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C233AC6CFB38824DD678C4D4 /* Pods_WebtoonRecommend.framework */; };
+		BC0F949728ACBC2E007677C9 /* WebtoonData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F949628ACBC2E007677C9 /* WebtoonData.swift */; };
+		BC0F949928ACBEFE007677C9 /* FirebaseTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F949828ACBEFE007677C9 /* FirebaseTool.swift */; };
 		BC7CCEF128ACB0290055E771 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */; };
 		BC8DD30328AB716900B27840 /* WebtoonRecommendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */; };
 		BC8DD30528AB716900B27840 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30428AB716900B27840 /* ContentView.swift */; };
@@ -17,6 +19,8 @@
 
 /* Begin PBXFileReference section */
 		6F86F5B3704A11141D7510AE /* Pods-WebtoonRecommend.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebtoonRecommend.release.xcconfig"; path = "Target Support Files/Pods-WebtoonRecommend/Pods-WebtoonRecommend.release.xcconfig"; sourceTree = "<group>"; };
+		BC0F949628ACBC2E007677C9 /* WebtoonData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebtoonData.swift; sourceTree = "<group>"; };
+		BC0F949828ACBEFE007677C9 /* FirebaseTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseTool.swift; sourceTree = "<group>"; };
 		BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BC8DD2FF28AB716900B27840 /* WebtoonRecommend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebtoonRecommend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebtoonRecommendApp.swift; sourceTree = "<group>"; };
@@ -68,6 +72,8 @@
 		BC8DD30128AB716900B27840 /* WebtoonRecommend */ = {
 			isa = PBXGroup;
 			children = (
+				BC0F949628ACBC2E007677C9 /* WebtoonData.swift */,
+				BC0F949828ACBEFE007677C9 /* FirebaseTool.swift */,
 				BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */,
 				BC8DD30428AB716900B27840 /* ContentView.swift */,
 				BC8DD30628AB716A00B27840 /* Assets.xcassets */,
@@ -91,7 +97,6 @@
 				CC24254DD56ABE31F0A7BF40 /* Pods-WebtoonRecommend.debug.xcconfig */,
 				6F86F5B3704A11141D7510AE /* Pods-WebtoonRecommend.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -211,6 +216,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC8DD30528AB716900B27840 /* ContentView.swift in Sources */,
+				BC0F949728ACBC2E007677C9 /* WebtoonData.swift in Sources */,
+				BC0F949928ACBEFE007677C9 /* FirebaseTool.swift in Sources */,
 				BC8DD30328AB716900B27840 /* WebtoonRecommendApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
