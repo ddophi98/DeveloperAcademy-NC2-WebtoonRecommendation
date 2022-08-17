@@ -8,6 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    init() {
+        FirebaseTool.instance.getWebtoon {
+            let webtoons = WebtoonData.instance.webtoons
+            print(webtoons[0].title)
+        }
+        FirebaseTool.instance.getClusterWord {
+            let clusterWords = WebtoonData.instance.clusterWords
+            print(clusterWords[3].words)
+        }
+    }
+    
     var body: some View {
         Text("Hello, world!")
             .padding()
