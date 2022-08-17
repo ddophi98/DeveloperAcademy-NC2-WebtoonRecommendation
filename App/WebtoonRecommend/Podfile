@@ -8,5 +8,6 @@ target 'WebtoonRecommend' do
   # Pods for WebtoonRecommend
   pod 'Firebase/Core'
   pod 'Firebase/Firestore'
+  pod 'Firebase/Storage'
   pod 'FirebaseFirestoreSwift'
 end

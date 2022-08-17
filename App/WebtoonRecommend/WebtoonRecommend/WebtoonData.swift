@@ -5,14 +5,86 @@
 //  Created by 김동락 on 2022/08/17.
 //
 
+import UIKit
+
 class WebtoonData {
     static let instance = WebtoonData()
     
-    var webtoons = [Webtoon]()
-    var clusterWords = [ClusterWord]()
+    private var webtoons = [Webtoon]()
+    private var clusterWords = [ClusterWord]()
+    
+    // 웹툰 배열에 추가하기
+    func addWebtoon(jsonData: WebtoonJson, thumbnail: Data?){
+        var image: UIImage
+        
+        if thumbnail == nil {
+            image = UIImage(named: "no_image")!
+        } else {
+            if UIImage(data: thumbnail!) == nil {
+                image = UIImage(named: "no_image")!
+            } else {
+                image = UIImage(data: thumbnail!)!
+            }
+        }
+
+        let newWebtoon = Webtoon(
+            id: jsonData.id,
+            title: jsonData.title,
+            author: jsonData.author,
+            day: jsonData.day,
+            genre: jsonData.genre,
+            platform: jsonData.platform,
+            story: jsonData.story,
+            thumbnail: image,
+            clusterByStory1: jsonData.clusterByStory1,
+            clusterByStory2: jsonData.clusterByStory2,
+            clusterByStyle: jsonData.clusterByStyle
+        )
+        WebtoonData.instance.webtoons.append(newWebtoon)
+    }
+    
+    // 웹툰 배열 가져오기
+    func getWebtoon() -> [Webtoon] {
+        return webtoons
+    }
+    
+    // 단어 배열에 추가하기
+    func addClusterWords(jsonData: ClusterWordJson) {
+        let wordGroup = jsonData.words
+        let startIndex = wordGroup.index(wordGroup.startIndex, offsetBy: 1)// 사용자지정 시작인덱스
+        let endIndex = wordGroup.index(wordGroup.startIndex, offsetBy: wordGroup.count-1)// 사용자지정 끝인덱스
+        let sliced_str = wordGroup[startIndex ..< endIndex]
+        let words = sliced_str.components(separatedBy: ", ")
+        
+        let newClusterWords = ClusterWord(
+            genre: jsonData.genre,
+            clusterNum: jsonData.clusterNum,
+            words: words
+        )
+        WebtoonData.instance.clusterWords.append(newClusterWords)
+    }
+    
+    // 단어 배열 가져오기
+    func getClusterWords() -> [ClusterWord] {
+        return clusterWords
+    }
 }
 
-struct Webtoon: Decodable {
+struct Webtoon {
+    var id: Int
+    var title: String
+    var author: String
+    var day: String
+    var genre: String
+    var platform: String
+    var story: String
+    var thumbnail: UIImage
+    var clusterByStory1: Int
+    var clusterByStory2: Int
+    var clusterByStyle: Int
+}
+
+struct WebtoonJson: Decodable {
     var id: Int
     var title: String
     var author: String
@@ -40,7 +112,13 @@ struct Webtoon: Decodable {
     }
 }
 
-struct ClusterWord: Decodable {
+struct ClusterWord {
+    var genre: String
+    var clusterNum: Int
+    var words: [String]
+}
+
+struct ClusterWordJson: Decodable {
     var genre: String
     var clusterNum: Int
     var words: String
