@@ -18,17 +18,53 @@ class WebtoonData: ObservableObject {
     // 웹툰 정보 가져오기
     func initInfo() {
         let firebaseTool = FirebaseTool(webtoonData: self)
+        let fileTool = FileTool()
         
-        firebaseTool.saveWebtoonAndImage {
+        // 앱 내부 저장소에 데이터가 없다면
+        if !fileTool.checkFile(folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName) {
+            // 파이어베이스에서 데이터 가져오기
+            firebaseTool.saveWebtoonAndImage {
+                self.isFinishSavingWebtoonAndImage = true
+                if self.isFinishSavingClusterWord {
+                    self.isFinishSavingAll = true
+                }
+                
+                // 그리고 앱 내부에 데이터 저장하기
+                let encodedData = fileTool.encodeWebtoon(data: self.webtoons)
+                fileTool.writeFile(data: encodedData, folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName)
+            }
+        } else {
+            // 그리고 앱 내부에서 데이터 꺼내오기
+            let jsonData = fileTool.loadFile(folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName)
+            guard let decodedData = fileTool.decodeWebtoon(data: jsonData) else {return}
+            self.webtoons = decodedData
+            
             self.isFinishSavingWebtoonAndImage = true
-//            print(WebtoonData.instance.getWebtoon()[0].title)
             if self.isFinishSavingClusterWord {
                 self.isFinishSavingAll = true
             }
         }
-        firebaseTool.saveClusterWord {
+        
+        // 앱 내부 저장소에 데이터가 없다면
+        if !fileTool.checkFile(folderName: GlobalVar.folderName, fileName: GlobalVar.clusterWordJsonName) {
+            // 파이어베이스에서 데이터 가져오기
+            firebaseTool.saveClusterWord {
+                self.isFinishSavingClusterWord = true
+                if self.isFinishSavingWebtoonAndImage {
+                    self.isFinishSavingAll = true
+                }
+                
+                // 그리고 앱 내부에 데이터 저장하기
+                let encodedData = fileTool.encodeClusterWord(data: self.clusterWords)
+                fileTool.writeFile(data: encodedData, folderName: GlobalVar.folderName, fileName: GlobalVar.clusterWordJsonName)
+            }
+        } else {
+            // 그리고 앱 내부에서 데이터 꺼내오기
+            let jsonData = fileTool.loadFile(folderName: GlobalVar.folderName, fileName: GlobalVar.clusterWordJsonName)
+            guard let decodedData = fileTool.decodeClusterWord(data: jsonData) else {return}
+            self.clusterWords = decodedData
+            
             self.isFinishSavingClusterWord = true
-//            print(WebtoonData.instance.getClusterWords()[0].words[0])
             if self.isFinishSavingWebtoonAndImage {
                 self.isFinishSavingAll = true
             }
@@ -37,16 +73,10 @@ class WebtoonData: ObservableObject {
     
     // 웹툰 배열에 추가하기
     func addWebtoon(jsonData: WebtoonJson, thumbnail: Data?){
-        var image: UIImage
+        var image: Data = UIImage(named: "no_image")!.pngData()!
         
-        if thumbnail == nil {
-            image = UIImage(named: "no_image")!
-        } else {
-            if UIImage(data: thumbnail!) == nil {
-                image = UIImage(named: "no_image")!
-            } else {
-                image = UIImage(data: thumbnail!)!
-            }
+        if thumbnail != nil {
+            image = thumbnail!
         }
 
         let newWebtoon = Webtoon(
@@ -92,7 +122,7 @@ class WebtoonData: ObservableObject {
     }
 }
 
-struct Webtoon {
+struct Webtoon: Codable {
     var id: Int
     var title: String
     var author: String
@@ -100,13 +130,13 @@ struct Webtoon {
     var genre: String
     var platform: String
     var story: String
-    var thumbnail: UIImage
+    var thumbnail: Data
     var clusterByStory1: Int
     var clusterByStory2: Int
     var clusterByStyle: Int
 }
 
-struct WebtoonJson: Decodable {
+struct WebtoonJson: Codable {
     var id: Int
     var title: String
     var author: String
@@ -134,13 +164,13 @@ struct WebtoonJson: Decodable {
     }
 }
 
-struct ClusterWord {
+struct ClusterWord: Codable {
     var genre: String
     var clusterNum: Int
     var words: [String]
 }
 
-struct ClusterWordJson: Decodable {
+struct ClusterWordJson: Codable {
     var genre: String
     var clusterNum: Int
     var words: String
