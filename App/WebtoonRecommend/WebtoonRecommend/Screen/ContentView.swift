@@ -18,16 +18,19 @@ struct ContentView: View {
     var body: some View {
         TabView {
             GenreView()
+                .environmentObject(webtoonData)
                 .tabItem {
                     Image(systemName: "square.split.bottomrightquarter")
                     Text("장르")
                 }
             StoryView()
+                .environmentObject(webtoonData)
                 .tabItem {
                     Image(systemName: "doc.plaintext")
                     Text("스토리")
                 }
             DrawingStyleView()
+                .environmentObject(webtoonData)
                 .tabItem {
                     Image(systemName: "pencil.and.outline")
                     Text("그림체")
@@ -36,7 +39,7 @@ struct ContentView: View {
         .accentColor(Color.highlighted)
         .preferredColorScheme(.dark)
         .onAppear(){
-            // webtoonData.initInfo()
+            webtoonData.initInfo()
         }
     }
 }
