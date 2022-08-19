@@ -12,6 +12,10 @@
 		BC0F949928ACBEFE007677C9 /* FirebaseTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F949828ACBEFE007677C9 /* FirebaseTool.swift */; };
 		BC0F949B28ADF7F3007677C9 /* FileTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F949A28ADF7F3007677C9 /* FileTool.swift */; };
 		BC0F94A428AE119E007677C9 /* GlobalVar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F94A328AE119E007677C9 /* GlobalVar.swift */; };
+		BC0F94A628AF5738007677C9 /* GenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F94A528AF5738007677C9 /* GenreView.swift */; };
+		BC0F94A828AF5743007677C9 /* StoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F94A728AF5743007677C9 /* StoryView.swift */; };
+		BC0F94AA28AF5763007677C9 /* DrawingStyleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F94A928AF5763007677C9 /* DrawingStyleView.swift */; };
+		BC0F94AD28AF5AAC007677C9 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F94AC28AF5AAC007677C9 /* ColorExtension.swift */; };
 		BC7CCEF128ACB0290055E771 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */; };
 		BC8DD30328AB716900B27840 /* WebtoonRecommendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */; };
 		BC8DD30528AB716900B27840 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30428AB716900B27840 /* ContentView.swift */; };
@@ -26,6 +30,10 @@
 		BC0F949A28ADF7F3007677C9 /* FileTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTool.swift; sourceTree = "<group>"; };
 		BC0F949C28AE0F81007677C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BC0F94A328AE119E007677C9 /* GlobalVar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVar.swift; sourceTree = "<group>"; };
+		BC0F94A528AF5738007677C9 /* GenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreView.swift; sourceTree = "<group>"; };
+		BC0F94A728AF5743007677C9 /* StoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryView.swift; sourceTree = "<group>"; };
+		BC0F94A928AF5763007677C9 /* DrawingStyleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingStyleView.swift; sourceTree = "<group>"; };
+		BC0F94AC28AF5AAC007677C9 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BC8DD2FF28AB716900B27840 /* WebtoonRecommend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebtoonRecommend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebtoonRecommendApp.swift; sourceTree = "<group>"; };
@@ -77,6 +85,9 @@
 			isa = PBXGroup;
 			children = (
 				BC8DD30428AB716900B27840 /* ContentView.swift */,
+				BC0F94A528AF5738007677C9 /* GenreView.swift */,
+				BC0F94A728AF5743007677C9 /* StoryView.swift */,
+				BC0F94A928AF5763007677C9 /* DrawingStyleView.swift */,
 			);
 			path = Screen;
 			sourceTree = "<group>";
@@ -87,6 +98,14 @@
 				BC0F94A328AE119E007677C9 /* GlobalVar.swift */,
 			);
 			path = Global;
+			sourceTree = "<group>";
+		};
+		BC0F94AB28AF5A97007677C9 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				BC0F94AC28AF5AAC007677C9 /* ColorExtension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		BC8DD2F628AB716900B27840 = {
@@ -111,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */,
+				BC0F94AB28AF5A97007677C9 /* Extension */,
 				BC0F94A228AE1191007677C9 /* Global */,
 				BC0F94A128AE1008007677C9 /* Screen */,
 				BC0F949E28AE0FB3007677C9 /* Data */,
@@ -257,10 +277,14 @@
 			files = (
 				BC0F949B28ADF7F3007677C9 /* FileTool.swift in Sources */,
 				BC0F94A428AE119E007677C9 /* GlobalVar.swift in Sources */,
+				BC0F94AA28AF5763007677C9 /* DrawingStyleView.swift in Sources */,
+				BC0F94A628AF5738007677C9 /* GenreView.swift in Sources */,
 				BC8DD30528AB716900B27840 /* ContentView.swift in Sources */,
 				BC0F949728ACBC2E007677C9 /* WebtoonData.swift in Sources */,
 				BC0F949928ACBEFE007677C9 /* FirebaseTool.swift in Sources */,
+				BC0F94A828AF5743007677C9 /* StoryView.swift in Sources */,
 				BC8DD30328AB716900B27840 /* WebtoonRecommendApp.swift in Sources */,
+				BC0F94AD28AF5AAC007677C9 /* ColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

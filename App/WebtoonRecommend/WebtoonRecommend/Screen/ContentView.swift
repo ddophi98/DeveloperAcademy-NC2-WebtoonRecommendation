@@ -9,23 +9,34 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var webtoonData = WebtoonData()
-    let idx = 10
+    
+    init() {
+        UITabBar.appearance().backgroundColor = UIColor(Color.background)
+        UITabBar.appearance().unselectedItemTintColor = UIColor(Color.mainText)
+    }
     
     var body: some View {
-        VStack {
-            if  webtoonData.isFinishSavingAll {
-                Text("Finish!")
-                    .padding()
-                Image(uiImage: UIImage(data: webtoonData.getWebtoon()[idx].thumbnail)!)
-                Text("\(webtoonData.getWebtoon()[idx].title)")
-                Text("\(webtoonData.getWebtoon()[idx].story)")
-                Text("\(webtoonData.getClusterWords()[0].words[0])")
-            }else{
-                Text("Not yet")
-                    .padding()
-            }
-        }.onAppear(){
-            webtoonData.initInfo()
+        TabView {
+            GenreView()
+                .tabItem {
+                    Image(systemName: "square.split.bottomrightquarter")
+                    Text("장르")
+                }
+            StoryView()
+                .tabItem {
+                    Image(systemName: "doc.plaintext")
+                    Text("스토리")
+                }
+            DrawingStyleView()
+                .tabItem {
+                    Image(systemName: "pencil.and.outline")
+                    Text("그림체")
+                }
+        }
+        .accentColor(Color.highlighted)
+        .preferredColorScheme(.dark)
+        .onAppear(){
+            // webtoonData.initInfo()
         }
     }
 }
