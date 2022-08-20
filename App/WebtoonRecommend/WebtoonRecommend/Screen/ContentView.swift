@@ -13,6 +13,7 @@ struct ContentView: View {
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color.background)
         UITabBar.appearance().unselectedItemTintColor = UIColor(Color.mainText)
+        UITabBar.appearance().scrollEdgeAppearance = .init()
     }
     
     var body: some View {
@@ -40,6 +41,9 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         .onAppear(){
             webtoonData.initInfo()
+//            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+//                webtoonData.progress += 100
+//            }
         }
     }
 }
