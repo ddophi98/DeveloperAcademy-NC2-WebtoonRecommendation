@@ -19,7 +19,7 @@ struct GenreView: View {
                 getLoadingView()
             }
         }
-        .background(Color.mainText)
+        .background(Color.background)
     }
     
     // 제목과 검색 버튼 있는 헤더
@@ -36,17 +36,28 @@ struct GenreView: View {
         }
         .padding(15)
         .background(Color.background)
+        Rectangle()
+            .fill(Color.mainText)
+            .frame(height: 2)
     }
 
-    // 로티를 이용한 로딩 애니메이션
+    // 로티를 이용한 로딩 애니메이션 및 프로그래스 바
     @ViewBuilder
     func getLoadingView() -> some View {
         Spacer()
         LottieView(filename: "Loading")
             .frame(width: 200, height: 200)
-        Text(String(webtoonData.progress))
-            .padding()
-            .background(Color.background)
+        Text("최초 실행시에만 데이터가 다운로드 됩니다.")
+            .foregroundColor(Color.mainText)
+            .font(.system(size: 15, weight: .heavy))
+            .padding(.bottom, 15)
+        ProgressView(value: Double(webtoonData.progress), total: Double(GlobalVar.webtoonSize*2))
+            .frame(height: 8.0)
+            .scaleEffect(x: 1, y: 2, anchor: .center)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .tint(Color.highlighted)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 50)
         Spacer()
     }
 
@@ -55,7 +66,6 @@ struct GenreView: View {
     func getContentView() -> some View {
         Text("finish!")
             .padding()
-            .background(Color.background)
         Spacer()
     }
 }
