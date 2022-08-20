@@ -26,10 +26,16 @@ class FirebaseTool {
         getWebtoon() { (isError1, webtoonArr) in
             if !isError1 {
                 self.getThumbnail() { (isError2, thumbnailArr) in
-                    for (webtoon, thumbnail) in zip(webtoonArr, thumbnailArr) {
-                        self.webtoonData.addWebtoon(jsonData: webtoon, thumbnail: thumbnail)
+                    DispatchQueue.global().async {
+                        print("-- FirebaseTool/addWebtoon in for block --")
+                        for (webtoon, thumbnail) in zip(webtoonArr, thumbnailArr) {
+                            self.webtoonData.addWebtoon(jsonData: webtoon, thumbnail: thumbnail)
+                            DispatchQueue.main.async {
+                                self.webtoonData.progress += 1
+                            }
+                        }
+                        completion()
                     }
-                    completion()
                 }
             }
         }
@@ -40,6 +46,7 @@ class FirebaseTool {
         print("-- FirebaseTool/saveClusterWord --")
         getClusterWord() { (isError, clusterWordArr) in
             if !isError {
+                print("-- FirebaseTool/addClusterWords in for block --")
                 for clusterWord in clusterWordArr {
                     self.webtoonData.addClusterWords(jsonData: clusterWord)
                 }
@@ -90,7 +97,9 @@ class FirebaseTool {
                     return
                 }
                 imageArr[idx] = data
-                if !imageArr.contains(nil) {
+                let nilCnt = imageArr.filter({($0) == nil}).count
+                self.webtoonData.progress = GlobalVar.webtoonSize - nilCnt
+                if nilCnt == 0 {
                     completion(isError, imageArr)
                 }
             }

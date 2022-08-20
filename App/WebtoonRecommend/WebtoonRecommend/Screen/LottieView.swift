@@ -19,6 +19,7 @@ struct LottieView: UIViewRepresentable {
         animationView.animation = Animation.named(filename)
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = .loop
+        animationView.backgroundBehavior = .pauseAndRestore
         animationView.play()
         
         //컨테이너의 너비와 높이를 자동으로 지정할 수 있도록
