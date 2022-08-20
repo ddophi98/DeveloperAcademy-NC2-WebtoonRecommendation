@@ -14,9 +14,11 @@ class WebtoonData: ObservableObject {
     private var isFinishSavingClusterWord = false
     
     @Published var isFinishSavingAll = false
+    @Published var progress = 0
     
     // 웹툰 정보 가져오기
     func initInfo() {
+        print("-- WebtoonData/initInfo --")
         let firebaseTool = FirebaseTool(webtoonData: self)
         let fileTool = FileTool()
         
@@ -37,19 +39,22 @@ class WebtoonData: ObservableObject {
     
     // 모든 작업이 끝났는지 체크하기
     private func setFinish() {
+        print("-- WebtoonData/setFinish --")
         if self.isFinishSavingWebtoonAndImage && self.isFinishSavingClusterWord {
-            self.isFinishSavingAll = true
+            DispatchQueue.main.async {
+                self.isFinishSavingAll = true
+            }
             print("-- All Loading Finish --")
         }
     }
     
     // 파이어베이스에서 웹툰 데이터 가져오기
     private func getWebtoonFromFirebase(firebaseTool: FirebaseTool, fileTool: FileTool) {
+        print("-- WebtoonData/getWebtoonFromFirebase --")
         firebaseTool.saveWebtoonAndImage {
             // 그리고 앱 내부에 데이터 저장하기
             let encodedData = fileTool.encodeWebtoon(data: self.webtoons)
             fileTool.writeFile(data: encodedData, folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName)
-            
             self.isFinishSavingWebtoonAndImage = true
             self.setFinish()
         }
@@ -57,6 +62,7 @@ class WebtoonData: ObservableObject {
     
     // 앱 내부 저장소에서 웹툰 데이터 꺼내오기
     private func getWebtoonFromStorage(fileTool: FileTool) {
+        print("-- WebtoonData/getWebtoonFromStorage --")
         let jsonData = fileTool.loadFile(folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName)
         guard let decodedData = fileTool.decodeWebtoon(data: jsonData) else {return}
         self.webtoons = decodedData
@@ -67,6 +73,7 @@ class WebtoonData: ObservableObject {
     
     // 파이어베이스에서 단어 데이터 가져오기
     private func getClusterWordFromFirebase(firebaseTool: FirebaseTool, fileTool: FileTool) {
+        print("-- WebtoonData/getClusterWordFromFirebase --")
         firebaseTool.saveClusterWord {
             // 그리고 앱 내부에 데이터 저장하기
             let encodedData = fileTool.encodeClusterWord(data: self.clusterWords)
@@ -79,6 +86,7 @@ class WebtoonData: ObservableObject {
     
     // 앱 내부 저장소에서 단어 데이터 꺼내오기
     private func getClusterWordFromStorage(fileTool: FileTool) {
+        print("-- WebtoonData/getClusterWordFromStorage --")
         let jsonData = fileTool.loadFile(folderName: GlobalVar.folderName, fileName: GlobalVar.clusterWordJsonName)
         guard let decodedData = fileTool.decodeClusterWord(data: jsonData) else {return}
         self.clusterWords = decodedData
