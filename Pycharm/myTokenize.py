@@ -1,6 +1,6 @@
 from konlpy.tag import Kkma
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+from sklearn.decomposition import TruncatedSVD
 
 class MyTokenize:
     pos = ("N", "V", "M", "XR")  # 토큰화할 단어 태그 http://kkma.snu.ac.kr/documents/?doc=postag

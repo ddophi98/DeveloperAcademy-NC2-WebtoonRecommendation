@@ -1,5 +1,6 @@
 import pandas as pd
 import pickle as pk
+from urllib import request
 import os
 
 
@@ -31,3 +32,12 @@ class MyUtil:
     def load_data(filename):
         with open(filename, 'rb') as f:
             return pk.load(f)
+
+    @staticmethod
+    def save_images(urls):
+        print("--images downloading start--")
+        for idx, url in enumerate(urls):
+            print("\r" + str(idx + 1) + "/" + str(len(urls)), end="")
+            request.urlretrieve(url, "images/thumbnail" + str(idx) + ".jpg")
+        print()
+        print("--images downloading end--")
