@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.decomposition import TruncatedSVD
+import matplotlib.pyplot as plt
 
 class MyStyleClustering:
     max_dim = 32
@@ -55,7 +57,9 @@ class MyStyleClustering:
             # 모든 썸네일에서 나온 정보들을 한 배열에 저장해놓기
             style_info_list.append(style_info)
         print()
-        return style_info_list
+        svd = TruncatedSVD(n_components=2)
+        reduced_style_info_list = svd.fit_transform(style_info_list)
+        return reduced_style_info_list
 
     def kmeans_cluster(self, style_info_list, k=10):
         kmeans = KMeans(n_clusters=k)
@@ -69,6 +73,24 @@ class MyStyleClustering:
             print("label: " + str(num))
             print(titles)
             print()
+
+    def visualize(self, cluster_labels, plot_data):
+        fig = plt.figure(figsize=(6,4))
+        colors = plt.cm.get_cmap("Spectral")(np.linspace(0, 1, len(set(cluster_labels))))
+        ax = fig.add_subplot(1, 1, 1)
+
+        for k, col in zip(range(len(colors)), colors):
+            my_members = (cluster_labels == k)
+            ax.plot(
+                plot_data[my_members, 0],
+                plot_data[my_members, 1],
+                'w',
+                markerfacecolor=col,
+                marker='.'
+            )
+        ax.set_title('K-Means')
+
+        plt.show()
 
 # 스타일 추출하는 모델 정의하기
 class StyleContentModel(tf.keras.models.Model):

@@ -72,6 +72,7 @@ def do_clustering_by_story(story_ct, k_for_total=175):
     cluster_labels_for_whole = story_ct.kmeans_cluster("전체", total_index, k=k_for_total)
     cluster_details = story_ct.get_cluster_details("전체")
     cluster_details_list.append(cluster_details)
+    story_ct.visualize(cluster_labels_for_whole)
 
     # 각 장르 안에서 클러스터링 하기
     cluster_labels_for_genre = [-1 for _ in range(len(td.total_data))]
@@ -110,6 +111,7 @@ def do_clustering_by_style():
     # 추출한 스타일로 k-means 클러스터링 하기
     cluster_labels = style_ct.kmeans_cluster(style_info_list, k=10)
     td.total_data["cluster_style"] = cluster_labels
+    style_ct.visualize(cluster_labels, style_info_list)
     print("--kmeans style clustering end--")
 
 if __name__ == '__main__':
@@ -117,6 +119,7 @@ if __name__ == '__main__':
     story_clustering = do_tokenize_and_vectorize()
     do_clustering_by_story(story_clustering, k_for_total=175)
     do_clustering_by_style()
+    ut.save_images(td.total_data['thumbnail'])
     ut.make_csv(cluster_csv_filename, td.total_data)
     ut.make_csv(cluster_detail_csv_filename, td.cluster_details)
 

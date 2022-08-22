@@ -5,6 +5,7 @@ from sklearn.metrics import silhouette_samples
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import font_manager, rc
+from sklearn.decomposition import TruncatedSVD
 import seaborn as sns
 
 
@@ -122,3 +123,29 @@ class MyStoryClustering:
         sns.barplot(data=selected_sim_df, x='similarity', y='title')
         plt.title(item_title)
         plt.show()
+
+    def visualize(self, cluster_labels):
+        # print(self.vectorized.shape)
+        # svd = TruncatedSVD(n_components=2)
+        # reduced = svd.fit_transform(self.vectorized)
+
+        fig = plt.figure(figsize=(6,4))
+        colors = plt.cm.get_cmap("Spectral")(np.linspace(0, 1, len(set(cluster_labels))))
+        ax = fig.add_subplot(1, 1, 1)
+
+        for k, col in zip(range(len(colors)), colors):
+            my_members = (cluster_labels == k)
+            ax.plot(
+                self.vectorized[my_members, 0],
+                self.vectorized[my_members, 1],
+                'w',
+                markerfacecolor=col,
+                marker='.'
+            )
+        ax.set_title('K-Means')
+        plt.xlim(-0.25, 0.25)
+        plt.ylim(-0.25, 0.25)
+        plt.show()
+
+
+
