@@ -8,3 +8,4 @@ class WebtoonData:
         self.genre_list = []
         self.story_list = []
         self.platform_list = []
+        self.url_list = []

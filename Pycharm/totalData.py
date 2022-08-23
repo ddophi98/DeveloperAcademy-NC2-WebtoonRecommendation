@@ -15,6 +15,7 @@ class TotalData:
         "genre": [],
         "story": [],
         "platform": [],
+        "url": [],
     })
 
     # 각 클러스터별 핵심 단어를 저장할 변수
@@ -38,6 +39,7 @@ class TotalData:
             "genre": [],
             "story": [],
             "platform": [],
+            "url": [],
         })
 
         my_total_data['id'] = wd.id_list
@@ -48,6 +50,7 @@ class TotalData:
         my_total_data['genre'] = wd.genre_list
         my_total_data['story'] = wd.story_list
         my_total_data['platform'] = wd.platform_list
+        my_total_data['url'] = wd.url_list
         # my_total_data.set_index('id', inplace=True)
 
         return my_total_data
