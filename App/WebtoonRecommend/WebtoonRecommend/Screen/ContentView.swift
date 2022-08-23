@@ -41,6 +41,9 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         .onAppear(){
             webtoonData.initInfo()
+            
+//            // 테스트용
+//            webtoonData.isShortLoading = false
 //            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
 //                webtoonData.progress += 100
 //            }

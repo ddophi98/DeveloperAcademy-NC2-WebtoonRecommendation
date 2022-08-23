@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// 프로그래스바 + 로티 뷰로 보여지는 로딩 화면 (로딩이 오래 걸릴때)
 struct ProgressLoadingView: View {
     @StateObject var webtoonData: WebtoonData
     
