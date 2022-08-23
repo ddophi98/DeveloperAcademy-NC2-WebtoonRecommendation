@@ -72,7 +72,8 @@ class MyWebCrawling:
             else:
                 wd.genre_list.append(genre[1])
             wd.story_list.append(story)
-            wd.platform_list.append("네이버웹툰")
+            wd.platform_list.append("네이버")
+            wd.url_list.append(driver.current_url)
 
             # 뒤로 가기
             idx += 1
@@ -168,7 +169,8 @@ class MyWebCrawling:
                 else:
                     day_wd.genre_list.append(genre)
                 day_wd.story_list.append(story)
-                day_wd.platform_list.append("카카오웹툰")
+                day_wd.platform_list.append("카카오")
+                day_wd.url_list.append(driver.current_url)
                 total_titles.append(title)
 
                 idx += 1

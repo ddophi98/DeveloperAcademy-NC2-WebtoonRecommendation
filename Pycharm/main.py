@@ -10,12 +10,12 @@ from myStoryClustering import MyStoryClustering
 from myStyleClustering import MyStyleClustering
 
 
-naver_csv_filename = "네이버웹툰정보.csv"
-kakao_csv_filename = "카카오웹툰정보.csv"
-cluster_csv_filename = "클러스터정보.csv"
-cluster_detail_csv_filename = "클러스터상위단어.csv"
-vector_filename = "vector_data.pickle"
-images_filename = "images.pickle"
+naver_csv_filename = "data/네이버웹툰정보.csv"
+kakao_csv_filename = "data/카카오웹툰정보.csv"
+cluster_csv_filename = "data/클러스터정보.csv"
+cluster_detail_csv_filename = "data/클러스터상위단어.csv"
+vector_filename = "data/vector_data.pickle"
+images_filename = "data/images.pickle"
 
 # 네이버 및 카카오 웹툰 크롤링 하기 (새로 하기 또는 저장된 데이터 불러오기)
 def do_web_crawling():
@@ -72,7 +72,7 @@ def do_clustering_by_story(story_ct, k_for_total=175):
     cluster_labels_for_whole = story_ct.kmeans_cluster("전체", total_index, k=k_for_total)
     cluster_details = story_ct.get_cluster_details("전체")
     cluster_details_list.append(cluster_details)
-    story_ct.visualize(cluster_labels_for_whole)
+    # story_ct.visualize(cluster_labels_for_whole)
 
     # 각 장르 안에서 클러스터링 하기
     cluster_labels_for_genre = [-1 for _ in range(len(td.total_data))]
