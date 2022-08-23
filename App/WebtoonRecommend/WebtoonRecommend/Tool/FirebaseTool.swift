@@ -23,35 +23,35 @@ class FirebaseTool {
     // 웹툰 정보 및 썸네일 사진 저장하기
     func saveWebtoonAndImage(completion: @escaping ()->Void) {
         print("-- FirebaseTool/saveWebtoonAndImage --")
-        getWebtoon() { webtoonArr in
-
-                self.getThumbnail() { thumbnailArr in
-
-                        DispatchQueue.global().async {
-                            print("-- FirebaseTool/addWebtoon in for block --")
-                            for (webtoon, thumbnail) in zip(webtoonArr, thumbnailArr) {
-                                self.webtoonData.addWebtoon(jsonData: webtoon, thumbnail: thumbnail)
-                                DispatchQueue.main.async {
-                                    self.webtoonData.progress += 1
-                                }
-                            }
-                            completion()
+        getWebtoon() { [weak self] webtoonArr in
+            guard let self = self else {return}
+            self.getThumbnail() { [weak self] thumbnailArr in
+                guard let self = self else {return}
+                DispatchQueue.global().async {
+                    print("-- FirebaseTool/addWebtoon in for block --")
+                    for (webtoon, thumbnail) in zip(webtoonArr, thumbnailArr) {
+                        self.webtoonData.addWebtoon(jsonData: webtoon, thumbnail: thumbnail)
+                        DispatchQueue.main.async {
+                            self.webtoonData.progress += 1
                         }
+                    }
+                    completion()
                 }
+            }
         }
     }
     
     // 클러스터 단어 저장하기
     func saveClusterWord(completion: @escaping ()->Void) {
         print("-- FirebaseTool/saveClusterWord --")
-        getClusterWord() { clusterWordArr in
-
-                print("-- FirebaseTool/addClusterWords in for block --")
-                for clusterWord in clusterWordArr {
-                    self.webtoonData.addClusterWords(jsonData: clusterWord)
-                }
-                completion()
-
+        getClusterWord() { [weak self] clusterWordArr in
+            guard let self = self else {return}
+            print("-- FirebaseTool/addClusterWords in for block --")
+            for clusterWord in clusterWordArr {
+                self.webtoonData.addClusterWords(jsonData: clusterWord)
+            }
+            completion()
+            
         }
     }
     
@@ -60,12 +60,12 @@ class FirebaseTool {
         print("-- FirebaseTool/getWebtoon --")
         var webtoonJsonArr = [WebtoonJson]()
         
-        webtoonRef.getDocuments() { (querySnapshot, err) in
+        webtoonRef.getDocuments() { [weak self] (querySnapshot, err) in
+            guard let self = self else {return}
             guard let documents = querySnapshot?.documents else {
                 self.webtoonData.isError = true
                 return
             }
-            
             for document in documents {
                 do {
                     let jsonData = try JSONSerialization.data(withJSONObject: document.data())
@@ -87,7 +87,8 @@ class FirebaseTool {
         
         for idx in 0..<GlobalVar.webtoonSize {
             let filePath = storagePath + GlobalVar.imageFileName + String(idx) + GlobalVar.imageFileType
-            storage.reference(forURL: filePath).getData(maxSize: 1 * 512 * 512) { data, err in
+            storage.reference(forURL: filePath).getData(maxSize: 1 * 512 * 512) { [weak self] data, err in
+                guard let self = self else {return}
                 guard let data = data else {
                     self.webtoonData.isError = true
                     return
@@ -107,7 +108,8 @@ class FirebaseTool {
         print("-- FirebaseTool/getClusterWord --")
         var clusterWordArr = [ClusterWordJson]()
         
-        clusterWordRef.getDocuments() { (querySnapshot, err) in
+        clusterWordRef.getDocuments() { [weak self] (querySnapshot, err) in
+            guard let self = self else {return}
             guard let documents = querySnapshot?.documents else {
                 self.webtoonData.isError = true
                 return
