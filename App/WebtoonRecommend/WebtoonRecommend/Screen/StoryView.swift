@@ -8,10 +8,32 @@
 import SwiftUI
 
 struct StoryView: View {
+    @EnvironmentObject var webtoonData: WebtoonData
+    
     var body: some View {
         VStack {
-            Text("Story View")
+            HeaderView(title: "스토리")
+            if webtoonData.isFinishSavingAll {
+                getContentView()
+            } else if webtoonData.isError {
+                ErrorView(webtoonData: webtoonData)
+            } else {
+                if webtoonData.isImageExist {
+                    LoadingView()
+                } else {
+                    ProgressLoadingView(webtoonData: webtoonData)
+                }
+            }
         }
+        .background(Color.background)
+    }
+    
+    // 원래 보여줘야할 콘텐츠
+    @ViewBuilder
+    func getContentView() -> some View {
+        Text("finish!")
+            .padding()
+        Spacer()
     }
 }
 
