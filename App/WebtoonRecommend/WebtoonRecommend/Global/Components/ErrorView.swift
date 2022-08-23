@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// 데이터 로딩중 오류가 발생하면 보여주는 화면
 struct ErrorView: View {
     @StateObject var webtoonData: WebtoonData
     

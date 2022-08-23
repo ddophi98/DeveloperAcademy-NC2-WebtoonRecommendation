@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// 각 탭바의 헤더
 struct HeaderView: View {
     let title: String
     

@@ -14,7 +14,7 @@ class WebtoonData: ObservableObject {
     private var isFinishSavingClusterWord = false
     
     @Published var isError = false
-    @Published var isImageExist = true
+    @Published var isShortLoading = true
     @Published var isFinishSavingAll = false
     @Published var progress = 0
     
@@ -27,7 +27,7 @@ class WebtoonData: ObservableObject {
         
         // 앱 내부 저장소에 웹툰 데이터가 없다면 (JSON + 이미지 파일 가져오는거라서 느리게 끝남)
         if !fileTool.checkFile(folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName) {
-            isImageExist = false
+            isShortLoading = false
             getWebtoonFromFirebase(firebaseTool: firebaseTool, fileTool: fileTool)
         } else {
             // 의도적으로 딜레이 주기
@@ -52,7 +52,7 @@ class WebtoonData: ObservableObject {
         isFinishSavingWebtoonAndImage = false
         isFinishSavingClusterWord = false
         isError = false
-        isImageExist = true
+        isShortLoading = true
         isFinishSavingAll = false
         progress = 0
     }

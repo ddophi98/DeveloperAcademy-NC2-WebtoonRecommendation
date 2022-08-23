@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// 로티 뷰로 보여지는 로딩 화면 (로딩이 빨리 끝날때)
 struct LoadingView: View {
     var body: some View {
         VStack {

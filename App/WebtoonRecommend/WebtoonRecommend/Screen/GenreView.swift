@@ -18,7 +18,7 @@ struct GenreView: View {
             } else if webtoonData.isError {
                 ErrorView(webtoonData: webtoonData)
             } else {
-                if webtoonData.isImageExist {
+                if webtoonData.isShortLoading {
                     LoadingView()
                 } else {
                     ProgressLoadingView(webtoonData: webtoonData)
