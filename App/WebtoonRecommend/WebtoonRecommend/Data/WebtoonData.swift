@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-class WebtoonData: ObservableObject {
+class WebtoonData: ObservableObject {    
     var webtoons = [Webtoon]()
     var clusterWords = [ClusterWord]()
+
     private var isFinishSavingWebtoonAndImage = false
     private var isFinishSavingClusterWord = false
     
@@ -31,7 +32,7 @@ class WebtoonData: ObservableObject {
             getWebtoonFromFirebase(firebaseTool: firebaseTool, fileTool: fileTool)
         } else {
             // 의도적으로 딜레이 주기
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 guard let self = self else {return}
                 self.getWebtoonFromStorage(fileTool: fileTool)
             }

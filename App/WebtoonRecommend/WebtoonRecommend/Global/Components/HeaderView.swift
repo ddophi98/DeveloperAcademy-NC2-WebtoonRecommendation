@@ -26,7 +26,7 @@ struct HeaderView: View {
             .background(Color.background)
             Rectangle()
                 .fill(Color.mainText)
-                .frame(height: 2)
+                .frame(height: 1)
         }
     }
 }
