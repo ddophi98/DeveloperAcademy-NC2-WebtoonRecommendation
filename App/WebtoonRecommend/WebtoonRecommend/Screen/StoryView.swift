@@ -11,7 +11,7 @@ struct StoryView: View {
     @EnvironmentObject var webtoonData: WebtoonData
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HeaderView(title: "스토리")
             if webtoonData.isFinishSavingAll {
                 getContentView()

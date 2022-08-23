@@ -11,7 +11,7 @@ struct DrawingStyleView: View {
     @EnvironmentObject var webtoonData: WebtoonData
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HeaderView(title: "그림체")
             if webtoonData.isFinishSavingAll {
                 getContentView()
