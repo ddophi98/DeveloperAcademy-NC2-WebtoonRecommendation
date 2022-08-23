@@ -60,8 +60,7 @@ class FirebaseTool {
         print("-- FirebaseTool/getWebtoon --")
         var webtoonJsonArr = [WebtoonJson]()
         
-        webtoonRef.getDocuments() { [weak self] (querySnapshot, err) in
-            guard let self = self else {return}
+        webtoonRef.getDocuments() { (querySnapshot, err) in
             guard let documents = querySnapshot?.documents else {
                 self.webtoonData.isError = true
                 return
@@ -87,8 +86,7 @@ class FirebaseTool {
         
         for idx in 0..<GlobalVar.webtoonSize {
             let filePath = storagePath + GlobalVar.imageFileName + String(idx) + GlobalVar.imageFileType
-            storage.reference(forURL: filePath).getData(maxSize: 1 * 512 * 512) { [weak self] data, err in
-                guard let self = self else {return}
+            storage.reference(forURL: filePath).getData(maxSize: 1 * 512 * 512) { data, err in
                 guard let data = data else {
                     self.webtoonData.isError = true
                     return
@@ -108,8 +106,7 @@ class FirebaseTool {
         print("-- FirebaseTool/getClusterWord --")
         var clusterWordArr = [ClusterWordJson]()
         
-        clusterWordRef.getDocuments() { [weak self] (querySnapshot, err) in
-            guard let self = self else {return}
+        clusterWordRef.getDocuments() { (querySnapshot, err) in
             guard let documents = querySnapshot?.documents else {
                 self.webtoonData.isError = true
                 return
