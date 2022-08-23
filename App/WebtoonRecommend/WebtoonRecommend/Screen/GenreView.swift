@@ -15,8 +15,14 @@ struct GenreView: View {
             getHeaderView()
             if webtoonData.isFinishSavingAll {
                 getContentView()
+            } else if webtoonData.isError {
+                getErrorView()
             } else {
-                getLoadingView()
+                if webtoonData.isImageExist {
+                    getLoadingView()
+                } else {
+                    getProgressLoadingView()
+                }
             }
         }
         .background(Color.background)
@@ -41,9 +47,9 @@ struct GenreView: View {
             .frame(height: 2)
     }
 
-    // 로티를 이용한 로딩 애니메이션 및 프로그래스 바
+    // 로티를 이용한 로딩 애니메이션 및 프로그래스 바 (긴 로딩)
     @ViewBuilder
-    func getLoadingView() -> some View {
+    func getProgressLoadingView() -> some View {
         Spacer()
         LottieView(filename: "Loading")
             .frame(width: 200, height: 200)
@@ -60,6 +66,38 @@ struct GenreView: View {
             .padding(.bottom, 50)
         Spacer()
     }
+    
+    // 로티를 이용한 로딩 애니메이션
+    @ViewBuilder
+    func getLoadingView() -> some View {
+        Spacer()
+        LottieView(filename: "Loading")
+            .frame(width: 200, height: 200)
+        Spacer()
+    }
+    
+    // 데이터 받아오는 과정에서 오류가 떴을때 보여주는 뷰
+    @ViewBuilder
+    func getErrorView() -> some View {
+        Spacer()
+        VStack(spacing: 20) {
+            Text("데이터를 불러오는 중에 오류가 발생했습니다.")
+                .font(.system(size: 18, weight: .semibold))
+                .padding(.horizontal)
+            Button{
+                webtoonData.initInfo()
+            } label: {
+                HStack{
+                    Text("다시 시도하기")
+                        .font(.system(size: 16, weight: .bold))
+                    Image(systemName: "gobackward")
+                        .font(.system(size: 13, weight: .bold))
+                }
+            }
+        }
+        Spacer()
+    }
+
 
     // 원래 보여줘야할 콘텐츠
     @ViewBuilder

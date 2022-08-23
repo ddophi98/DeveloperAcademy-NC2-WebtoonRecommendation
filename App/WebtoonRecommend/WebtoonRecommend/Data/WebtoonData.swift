@@ -13,6 +13,8 @@ class WebtoonData: ObservableObject {
     private var isFinishSavingWebtoonAndImage = false
     private var isFinishSavingClusterWord = false
     
+    @Published var isError = false
+    @Published var isImageExist = true
     @Published var isFinishSavingAll = false
     @Published var progress = 0
     
@@ -20,21 +22,38 @@ class WebtoonData: ObservableObject {
     func initInfo() {
         print("-- WebtoonData/initInfo --")
         let firebaseTool = FirebaseTool(webtoonData: self)
-        let fileTool = FileTool()
+        let fileTool = FileTool(webtoonData: self)
+        initVariable()
         
-        // 앱 내부 저장소에 웹툰 데이터가 없다면
+        // 앱 내부 저장소에 웹툰 데이터가 없다면 (JSON + 이미지 파일 가져오는거라서 느리게 끝남)
         if !fileTool.checkFile(folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName) {
+            isImageExist = false
             getWebtoonFromFirebase(firebaseTool: firebaseTool, fileTool: fileTool)
         } else {
-            getWebtoonFromStorage(fileTool: fileTool)
+            // 의도적으로 딜레이 주기
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.getWebtoonFromStorage(fileTool: fileTool)
+            }
         }
         
-        // 앱 내부 저장소에 단어 데이터가 없다면
+        // 앱 내부 저장소에 단어 데이터가 없다면 (JSON 파일 가져오는거라서 빠르게 끝남)
         if !fileTool.checkFile(folderName: GlobalVar.folderName, fileName: GlobalVar.clusterWordJsonName) {
             getClusterWordFromFirebase(firebaseTool: firebaseTool, fileTool: fileTool)
         } else {
             getClusterWordFromStorage(fileTool: fileTool)
         }
+    }
+    
+    // 변수들 초기화히기
+    private func initVariable() {
+        webtoons = [Webtoon]()
+        clusterWords = [ClusterWord]()
+        isFinishSavingWebtoonAndImage = false
+        isFinishSavingClusterWord = false
+        isError = false
+        isImageExist = true
+        isFinishSavingAll = false
+        progress = 0
     }
     
     // 모든 작업이 끝났는지 체크하기
@@ -64,7 +83,10 @@ class WebtoonData: ObservableObject {
     private func getWebtoonFromStorage(fileTool: FileTool) {
         print("-- WebtoonData/getWebtoonFromStorage --")
         let jsonData = fileTool.loadFile(folderName: GlobalVar.folderName, fileName: GlobalVar.webtoonJsonName)
-        guard let decodedData = fileTool.decodeWebtoon(data: jsonData) else {return}
+        guard let decodedData = fileTool.decodeWebtoon(data: jsonData) else {
+            isError = true
+            return
+        }
         self.webtoons = decodedData
         
         self.isFinishSavingWebtoonAndImage = true
@@ -88,7 +110,10 @@ class WebtoonData: ObservableObject {
     private func getClusterWordFromStorage(fileTool: FileTool) {
         print("-- WebtoonData/getClusterWordFromStorage --")
         let jsonData = fileTool.loadFile(folderName: GlobalVar.folderName, fileName: GlobalVar.clusterWordJsonName)
-        guard let decodedData = fileTool.decodeClusterWord(data: jsonData) else {return}
+        guard let decodedData = fileTool.decodeClusterWord(data: jsonData) else {
+            isError = true
+            return
+        }
         self.clusterWords = decodedData
         
         self.isFinishSavingClusterWord = true

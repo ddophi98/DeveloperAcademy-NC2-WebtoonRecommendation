@@ -8,17 +8,22 @@
 import Foundation
 
 class FileTool {
-    let docsUrl: URL?
-    let fileManager = FileManager.default
+    private let docsUrl: URL?
+    private let fileManager = FileManager.default
+    private let webtoonData: WebtoonData
     
-    init() {
+    init(webtoonData: WebtoonData) {
         docsUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first
+        self.webtoonData = webtoonData
     }
     
     // 파일이 존재하는지 확인하기
     func checkFile(folderName: String, fileName: String) -> Bool {
         print("-- FileTool/checkFile --")
-        guard let docsUrl = docsUrl else { return false }
+        guard let docsUrl = docsUrl else {
+            webtoonData.isError = true
+            return false
+        }
         let dirUrl = docsUrl.appendingPathComponent(folderName)
         let saveUrl = dirUrl.appendingPathComponent(fileName)
         let result = fileManager.fileExists(atPath: saveUrl.path)
@@ -34,7 +39,7 @@ class FileTool {
         do {
             encodedData = try jsonEncoder.encode(data)
         } catch {
-            print("Error in encoding file: \(error)")
+            webtoonData.isError = true
         }
         return encodedData
     }
@@ -47,7 +52,7 @@ class FileTool {
         do {
             encodedData = try jsonEncoder.encode(data)
         } catch {
-            print("Error in encoding file: \(error)")
+            webtoonData.isError = true
         }
         return encodedData
     }
@@ -63,7 +68,7 @@ class FileTool {
         do {
             decodedData = try jsonDecoder.decode([Webtoon].self, from: data)
         } catch {
-            print("Error in decoding file: \(error)")
+            webtoonData.isError = true
         }
         return decodedData
     }
@@ -79,7 +84,7 @@ class FileTool {
         do {
             decodedData = try jsonDecoder.decode([ClusterWord].self, from: data)
         } catch {
-            print("Error in decoding file: \(error)")
+            webtoonData.isError = true
         }
         return decodedData
     }
@@ -96,7 +101,7 @@ class FileTool {
             try fileManager.createDirectory(at: dirUrl, withIntermediateDirectories: true)
             try data.write(to: saveUrl, options: .atomic)
         } catch {
-            print("Error in writing file: \(error)")
+            webtoonData.isError = true
         }
     }
     
@@ -111,7 +116,7 @@ class FileTool {
         do {
             data = try Data.init(contentsOf: saveUrl)
         } catch {
-            print("Error in loading file: \(error)")
+            webtoonData.isError = true
         }
         return data
     }
