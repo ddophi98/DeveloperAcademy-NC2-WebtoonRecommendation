@@ -26,6 +26,9 @@ struct StoryView: View {
             }
         }
         .background(Color.background)
+        .onAppear {
+            print("-- StoryView appear!! --")
+        }
     }
     
     // 전체 웹툰에서 스토리로 묶은 각각의 클러스터 그룹
@@ -33,15 +36,39 @@ struct StoryView: View {
     func getContentView() -> some View {
         ScrollView {
             VStack {
-                ForEach(webtoonData.clusterWords.indices, id: \.self) { index in
-                    if webtoonData.clusterWords[index].genre == Genre.All.string {
-                        getClusterGroup(groupIdx: webtoonData.clusterWords[index].clusterNum)
-                    }
+                ForEach(webtoonData.storyCluster[Genre.All.string]!.indices, id: \.self) { index in
+                    getClusterGroup(groupIdx: index)
                 }
             }
         }
-        
-        Spacer()
+    }
+    
+    // 테이블 셀로 이루어진 특정 클러스터 그룹
+    @ViewBuilder
+    func getClusterGroup(groupIdx: Int) -> some View {
+        VStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    ForEach(webtoonData.clusterWords[groupIdx].words, id: \.self) { word in
+                        Text(word)
+                            .font(.system(size: 12, weight: .heavy))
+                            .foregroundColor(.subText)
+                    }
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 22) {
+                        ForEach(webtoonData.storyCluster[Genre.All.string]![groupIdx], id: \.self) { index in
+                            getCell(idx: index)
+                        }
+                    }
+                }
+            }
+            .frame(height: 150)
+            .padding(.horizontal, 6)
+            Rectangle()
+                .fill(Color.mainText)
+                .frame(height: GlobalVar.lineWidth)
+        }
     }
     
     // 테이블 셀
@@ -68,36 +95,6 @@ struct StoryView: View {
             }
         }
         .frame(width: 81, height: 102)
-    }
-    
-    // 테이블 셀로 이루어진 특정 클러스터 그룹
-    @ViewBuilder
-    func getClusterGroup(groupIdx: Int) -> some View {
-        VStack {
-            VStack(alignment: .leading) {
-                HStack {
-                    ForEach(webtoonData.clusterWords[groupIdx].words, id: \.self) { word in
-                        Text(word)
-                            .font(.system(size: 12, weight: .heavy))
-                            .foregroundColor(.subText)
-                    }
-                }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 22) {
-                        ForEach(webtoonData.webtoons.indices, id: \.self) { index in
-                            if webtoonData.webtoons[index].clusterByStory1 == groupIdx {
-                                getCell(idx: index)
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(height: 150)
-            .padding(.horizontal, 6)
-            Rectangle()
-                .fill(Color.mainText)
-                .frame(height: GlobalVar.lineWidth)
-        }
     }
 }
 
