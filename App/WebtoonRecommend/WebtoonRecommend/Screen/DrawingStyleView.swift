@@ -9,12 +9,21 @@ import SwiftUI
 
 struct DrawingStyleView: View {
     @EnvironmentObject var webtoonData: WebtoonData
+    @State var isViewLoadingFinish = false
+    
+    init() {
+        print("-- DrawingStyleView init!! --")
+    }
     
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(title: "그림체")
             if webtoonData.isFinishSavingAll {
-                getContentView()
+                if isViewLoadingFinish {
+                    getContentView()
+                } else {
+                    LoadingView()
+                }
             } else if webtoonData.isError {
                 ErrorView(webtoonData: webtoonData)
             } else {
@@ -26,8 +35,11 @@ struct DrawingStyleView: View {
             }
         }
         .background(Color.background)
-        .onAppear {
-            print("-- DrawingStyleView appear!! --")
+        .onLoad {
+            print("-- StoryView load!! --")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                isViewLoadingFinish = true
+            }
         }
     }
     
@@ -48,7 +60,7 @@ struct DrawingStyleView: View {
     func getClusterGroup(groupIdx: Int) -> some View {
         VStack {
             VStack(alignment: .leading) {
-                Text("그림체\(groupIdx)")
+                Text("그림체\(groupIdx+1)")
                     .font(.system(size: 12, weight: .heavy))
                     .foregroundColor(.subText)
                 ScrollView(.horizontal, showsIndicators: false) {
