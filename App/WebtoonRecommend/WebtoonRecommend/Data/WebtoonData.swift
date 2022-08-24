@@ -10,6 +10,8 @@ import SwiftUI
 class WebtoonData: ObservableObject {    
     var webtoons = [Webtoon]()
     var clusterWords = [ClusterWord]()
+    var storyCluster = Dictionary<String, [[Int]]>()
+    var styleCluster = [[Int]]()
 
     private var isFinishSavingWebtoonAndImage = false
     private var isFinishSavingClusterWord = false
@@ -48,6 +50,8 @@ class WebtoonData: ObservableObject {
     
     // 변수들 초기화히기
     private func initVariable() {
+        storyCluster = Dictionary<String, [[Int]]>()
+        styleCluster = [[Int]]()
         webtoons = [Webtoon]()
         clusterWords = [ClusterWord]()
         isFinishSavingWebtoonAndImage = false
@@ -58,14 +62,48 @@ class WebtoonData: ObservableObject {
         progress = 0
     }
     
-    // 모든 작업이 끝났는지 체크하기
+    // 모든 작업이 끝났는지 체크하고 마무리 작업하기
     private func setFinish() {
         print("-- WebtoonData/setFinish --")
         if isFinishSavingWebtoonAndImage && isFinishSavingClusterWord {
             DispatchQueue.main.async {
                 self.isFinishSavingAll = true
             }
+            initStyleCluster()
+            initStoryCluster()
             print("-- All Loading Finish --")
+        }
+    }
+    
+    // 스토리로 분리된 클러스터 정리하기
+    private func initStoryCluster() {
+        var clusterNumsDict = Dictionary<String, Set<Int>>()
+        clusterNumsDict["전체"] = Set<Int>()
+        for webtoon in webtoons {
+            if clusterNumsDict[webtoon.genre] == nil {
+                clusterNumsDict[webtoon.genre] = Set<Int>()
+            }
+            clusterNumsDict["전체"]!.insert(webtoon.clusterByStory1)
+            clusterNumsDict[webtoon.genre]!.insert(webtoon.clusterByStory2)
+        }
+        for key in clusterNumsDict.keys {
+            storyCluster[key] = Array(repeating: [Int](), count: clusterNumsDict[key]!.count)
+        }
+        for idx in webtoons.indices {
+            storyCluster["전체"]![webtoons[idx].clusterByStory1].append(idx)
+            storyCluster[webtoons[idx].genre]![webtoons[idx].clusterByStory2].append(idx)
+        }
+    }
+    
+    // 그림체로 분리된 클러스터 정리하기
+    private func initStyleCluster() {
+        var set = Set<Int>()
+        for webtoon in webtoons {
+            set.insert(webtoon.clusterByStyle)
+        }
+        styleCluster = Array(repeating: [Int](), count: set.count)
+        for idx in webtoons.indices {
+            styleCluster[webtoons[idx].clusterByStyle].append(idx)
         }
     }
     
