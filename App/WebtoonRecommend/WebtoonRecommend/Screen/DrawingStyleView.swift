@@ -61,9 +61,11 @@ struct DrawingStyleView: View {
             }
             .frame(height: 150)
             .padding(.horizontal, 6)
-            Rectangle()
-                .fill(Color.mainText)
-                .frame(height: GlobalVar.lineWidth)
+            if groupIdx != webtoonData.styleCluster.count - 1 {
+                Rectangle()
+                    .fill(Color.mainText)
+                    .frame(height: GlobalVar.lineWidth)
+            }
         }
     }
     
