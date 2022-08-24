@@ -9,12 +9,21 @@ import SwiftUI
 
 struct StoryView: View {
     @EnvironmentObject var webtoonData: WebtoonData
+    @State var isViewLoadingFinish = false
+    
+    init() {
+        print("-- StoryView init!! --")
+    }
     
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(title: "스토리")
             if webtoonData.isFinishSavingAll {
-                getContentView()
+                if isViewLoadingFinish {
+                    getContentView()
+                } else {
+                    LoadingView()
+                }
             } else if webtoonData.isError {
                 ErrorView(webtoonData: webtoonData)
             } else {
@@ -26,8 +35,11 @@ struct StoryView: View {
             }
         }
         .background(Color.background)
-        .onAppear {
-            print("-- StoryView appear!! --")
+        .onLoad {
+            print("-- StoryView load!! --")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                isViewLoadingFinish = true
+            }
         }
     }
     
