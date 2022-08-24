@@ -9,7 +9,6 @@ import SwiftUI
 
 struct StoryView: View {
     @EnvironmentObject var webtoonData: WebtoonData
-    @State var isViewLoadingFinish = false
     
     init() {
         print("-- StoryView init!! --")
@@ -19,11 +18,7 @@ struct StoryView: View {
         VStack(spacing: 0) {
             HeaderView(title: "스토리")
             if webtoonData.isFinishSavingAll {
-                if isViewLoadingFinish {
-                    getContentView()
-                } else {
-                    LoadingView()
-                }
+                getContentView()
             } else if webtoonData.isError {
                 ErrorView(webtoonData: webtoonData)
             } else {
@@ -35,31 +30,26 @@ struct StoryView: View {
             }
         }
         .background(Color.background)
-        .onLoad {
-            print("-- StoryView load!! --")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                isViewLoadingFinish = true
-            }
-        }
     }
     
     // 전체 웹툰에서 스토리로 묶은 각각의 클러스터 그룹
     @ViewBuilder
     func getContentView() -> some View {
         ScrollView {
-            VStack {
+            LazyVGrid(columns: [GridItem(.flexible())], spacing: 0) {
                 ForEach(webtoonData.storyCluster[Genre.All.string]!.indices, id: \.self) { index in
                     getClusterGroup(groupIdx: index)
                 }
             }
         }
+        .padding(.top, 10)
     }
     
     // 테이블 셀로 이루어진 특정 클러스터 그룹
     @ViewBuilder
     func getClusterGroup(groupIdx: Int) -> some View {
-        VStack {
-            VStack(alignment: .leading) {
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     ForEach(webtoonData.clusterWords[groupIdx].words, id: \.self) { word in
                         Text(word)
@@ -68,15 +58,18 @@ struct StoryView: View {
                     }
                 }
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 22) {
+                    LazyHGrid(rows: [GridItem(.flexible())], spacing: 22) {
                         ForEach(webtoonData.storyCluster[Genre.All.string]![groupIdx], id: \.self) { index in
                             getCell(idx: index)
                         }
                     }
                 }
+                .frame(height: 102)
+                Spacer()
             }
             .frame(height: 150)
             .padding(.horizontal, 6)
+            .padding(.top, 12)
             if groupIdx != webtoonData.storyCluster["전체"]!.count - 1 {
                 Rectangle()
                     .fill(Color.mainText)
