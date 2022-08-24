@@ -10,6 +10,9 @@ import SwiftUI
 struct GenreView: View {
     @EnvironmentObject var webtoonData: WebtoonData
     @State var selectedGenre: Genre = .All
+    @State var selectedPlatform: Platform = .All
+    @State var isSelectingPlatform: Bool = false
+    @State var webtoonCount: Int = GlobalVar.webtoonSize
     
     var body: some View {
         VStack(spacing: 0) {
@@ -29,26 +32,36 @@ struct GenreView: View {
             }
         }
         .background(Color.background)
+        .onChange(of: selectedGenre) { _ in
+            getWebtoonCount()
+        }
+        .onChange(of: selectedPlatform) { _ in
+            getWebtoonCount()
+        }
     }
     
     // 장르 선택
     @ViewBuilder
     func getGenreListView() -> some View {
-        ScrollView(.horizontal) {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(Genre.allCases, id: \.self) { genre in
-                    VStack {
-                        Rectangle()
-                            .fill(Color.clear)
-                            .frame(height: 2)
-                        Text(genre.string)
-                            .font(.system(size: 14, weight: .heavy))
-                            .foregroundColor(genre == selectedGenre ? .highlighted : .mainText)
-                            .padding(.horizontal, 15)
-                        Rectangle()
-                            .fill(genre == selectedGenre ? Color.highlighted : Color.clear)
-                            .frame(height: 2)
-                            .padding(.horizontal, 4)
+                    Button {
+                        selectedGenre = genre
+                    } label: {
+                        VStack {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(height: 2)
+                            Text(genre.string)
+                                .font(.system(size: 14, weight: .heavy))
+                                .foregroundColor(genre == selectedGenre ? .highlighted : .mainText)
+                                .padding(.horizontal, 15)
+                            Rectangle()
+                                .fill(genre == selectedGenre ? Color.highlighted : Color.clear)
+                                .frame(height: 2)
+                                .padding(.horizontal, 4)
+                        }
                     }
                 }
             }.frame(height: 46)
@@ -63,15 +76,39 @@ struct GenreView: View {
     func getPlatformSelectView() -> some View {
         HStack {
             Spacer()
-            Text("전체")
-                .font(.system(size: 12, weight: .heavy))
-                .foregroundColor(.subText)
-            Image(systemName: "arrowtriangle.down.fill")
-                .font(.system(size: 10))
-                .foregroundColor(.subText)
+            Button {
+                isSelectingPlatform = true
+            } label: {
+                HStack(spacing: 5) {
+                    Text(selectedPlatform.string)
+                        .font(.system(size: 12, weight: .heavy))
+                        .foregroundColor(.subText)
+                    Text("(\(webtoonCount))")
+                        .font(.system(size: 12, weight: .heavy))
+                        .foregroundColor(.subText)
+                    Image(systemName: "arrowtriangle.down.fill")
+                        .font(.system(size: 10))
+                        .foregroundColor(.subText)
+                        .padding(.leading, 5)
+                }
+            }
         }
         .frame(height: 38)
         .padding(.trailing, 9)
+        .confirmationDialog(
+            "플랫폼을 선택하세요",
+            isPresented: $isSelectingPlatform
+        ){
+            Button("전체") {
+                selectedPlatform = .All
+            }
+            Button("네이버") {
+                selectedPlatform = .Naver
+            }
+            Button("카카오") {
+                selectedPlatform = .Kakao
+            }
+        }
     }
     
     // 해당 조건에 맞는 웹툰들
@@ -83,10 +120,20 @@ struct GenreView: View {
             GridItem(.flexible(), spacing: 0)
         ]
         
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 0) {
-                ForEach(webtoonData.webtoons.indices, id: \.self) { index in
-                    getCell(idx: index)
+        if webtoonCount == 0 {
+            Spacer()
+            Text("해당 웹툰은 아직 없습니다.")
+                .font(.system(size: 18, weight: .semibold))
+                .padding(.horizontal)
+            Spacer()
+        } else {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 0) {
+                    ForEach(webtoonData.webtoons.indices, id: \.self) { index in
+                        if isGenreSame(index: index) && isPlatformSame(index: index) {
+                            getCell(idx: index)
+                        }
+                    }
                 }
             }
         }
@@ -124,6 +171,35 @@ struct GenreView: View {
             .padding(.horizontal, 5)
         }
         .frame(width: GlobalVar.screenW / 3, height: 155)
+    }
+    
+    // 현재 선택된 장르와 같은지 비교
+    func isGenreSame(index: Int) -> Bool {
+        if webtoonData.webtoons[index].genre == selectedGenre.string || Genre.All.string == selectedGenre.string {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    // 현재 선택된 플랫폼과 같은지 비교
+    func isPlatformSame(index: Int) -> Bool {
+        if webtoonData.webtoons[index].platform == selectedPlatform.string || Platform.All.string == selectedPlatform.string {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    // 해당 조건에 맞는 웹툰 개수 계산
+    func getWebtoonCount() {
+        var cnt = 0
+        for idx in webtoonData.webtoons.indices {
+            if isGenreSame(index: idx) && isPlatformSame(index: idx) {
+                cnt += 1
+            }
+        }
+        webtoonCount = cnt
     }
 }
 

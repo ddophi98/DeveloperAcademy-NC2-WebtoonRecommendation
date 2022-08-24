@@ -10,7 +10,7 @@ import UIKit
 class GlobalVar {
     static let webtoonSize = 1788
     static let imageFileName = "thumbnail"
-    static let imageFileType = ".jpg"
+    static let imageFileType = ".png"
     static let folderName = "Json"
     static let webtoonJsonName = "webtoons.json"
     static let clusterWordJsonName = "clusterWords.json"
@@ -25,9 +25,9 @@ enum Platform: CaseIterable {
         case .All:
             return "전체"
         case .Naver:
-            return "네이버 웹툰"
+            return "네이버웹툰"
         case .Kakao:
-            return "카카오 웹툰"
+            return "카카오웹툰"
         }
     }
 }
