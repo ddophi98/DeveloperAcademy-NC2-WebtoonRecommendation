@@ -68,7 +68,7 @@ struct GenreView: View {
         }
         Rectangle()
             .fill(Color.mainText)
-            .frame(height: 1)
+            .frame(height: GlobalVar.lineWidth)
     }
     
     // 플랫폼 선택
