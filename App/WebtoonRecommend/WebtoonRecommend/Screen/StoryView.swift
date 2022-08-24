@@ -65,9 +65,11 @@ struct StoryView: View {
             }
             .frame(height: 150)
             .padding(.horizontal, 6)
-            Rectangle()
-                .fill(Color.mainText)
-                .frame(height: GlobalVar.lineWidth)
+            if groupIdx != webtoonData.storyCluster["전체"]!.count - 1 {
+                Rectangle()
+                    .fill(Color.mainText)
+                    .frame(height: GlobalVar.lineWidth)
+            }
         }
     }
     
