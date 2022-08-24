@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DrawingStyleView: View {
     @EnvironmentObject var webtoonData: WebtoonData
-    @State var isViewLoadingFinish = false
     
     init() {
         print("-- DrawingStyleView init!! --")
@@ -19,11 +18,7 @@ struct DrawingStyleView: View {
         VStack(spacing: 0) {
             HeaderView(title: "그림체")
             if webtoonData.isFinishSavingAll {
-                if isViewLoadingFinish {
-                    getContentView()
-                } else {
-                    LoadingView()
-                }
+                getContentView()
             } else if webtoonData.isError {
                 ErrorView(webtoonData: webtoonData)
             } else {
@@ -35,44 +30,42 @@ struct DrawingStyleView: View {
             }
         }
         .background(Color.background)
-        .onLoad {
-            print("-- StoryView load!! --")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                isViewLoadingFinish = true
-            }
-        }
     }
     
     // 전체 웹툰에서 그림체로 묶은 각각의 클러스터 그룹
     @ViewBuilder
     func getContentView() -> some View {
         ScrollView {
-            VStack {
+            LazyVGrid(columns: [GridItem(.flexible())], spacing: 0) {
                 ForEach(webtoonData.styleCluster.indices, id: \.self) { index in
                     getClusterGroup(groupIdx: index)
                 }
             }
         }
+        .padding(.top, 10)
     }
     
     // 테이블 셀로 이루어진 특정 클러스터 그룹
     @ViewBuilder
     func getClusterGroup(groupIdx: Int) -> some View {
-        VStack {
-            VStack(alignment: .leading) {
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("그림체\(groupIdx+1)")
                     .font(.system(size: 12, weight: .heavy))
                     .foregroundColor(.subText)
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 22) {
+                    LazyHGrid(rows: [GridItem(.flexible())], spacing: 22) {
                         ForEach(webtoonData.styleCluster[groupIdx], id: \.self) { index in
                             getCell(idx: index)
                         }
                     }
                 }
+                .frame(height: 102)
+                Spacer()
             }
             .frame(height: 150)
             .padding(.horizontal, 6)
+            .padding(.top, 12)
             if groupIdx != webtoonData.styleCluster.count - 1 {
                 Rectangle()
                     .fill(Color.mainText)
