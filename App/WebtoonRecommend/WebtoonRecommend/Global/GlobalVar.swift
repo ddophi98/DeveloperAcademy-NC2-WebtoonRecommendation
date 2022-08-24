@@ -16,6 +16,7 @@ class GlobalVar {
     static let clusterWordJsonName = "clusterWords.json"
     static let screenW = UIScreen.main.bounds.width
     static let screenH = UIScreen.main.bounds.height
+    static let lineWidth: CGFloat = 1
 }
 
 enum Platform: CaseIterable {
