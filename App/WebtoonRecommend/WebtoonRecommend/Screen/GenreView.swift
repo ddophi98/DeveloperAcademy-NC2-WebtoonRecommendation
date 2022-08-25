@@ -144,7 +144,7 @@ struct GenreView: View {
     // 테이블 셀
     @ViewBuilder
     func getCell(idx: Int) -> some View {
-        NavigationLink(destination: DetailView(webtoonIndex: idx)) {
+        NavigationLink(destination: DetailView(webtoon: webtoonData.webtoons[idx]).environmentObject(webtoonData)) {
             VStack {
                 Image(uiImage:
                         UIImage(data: webtoonData.webtoons[idx].thumbnail) ??

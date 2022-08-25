@@ -93,6 +93,7 @@ class WebtoonData: ObservableObject {
             storyCluster["전체"]![webtoons[idx].clusterByStory1].append(idx)
             storyCluster[webtoons[idx].genre]![webtoons[idx].clusterByStory2].append(idx)
         }
+        print(storyCluster["판타지"]![2])
     }
     
     // 그림체로 분리된 클러스터 정리하기
@@ -213,6 +214,10 @@ struct Webtoon: Codable {
     var clusterByStory1: Int
     var clusterByStory2: Int
     var clusterByStyle: Int
+    
+    static func makeDefault() -> Webtoon {
+        return Webtoon(id: 0, title: "제목", author: "작가", day: "요일", genre: "장르", platform: "플랫폼", story: "스토리", thumbnail: UIImage(named: "no_image")!.pngData()!, clusterByStory1: 0, clusterByStory2: 0, clusterByStyle: 0)
+    }
 }
 
 struct WebtoonJson: Codable {
