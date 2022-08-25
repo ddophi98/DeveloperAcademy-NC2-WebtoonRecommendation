@@ -31,6 +31,8 @@ struct GenreView: View {
                 }
             }
         }
+        .navigationBarTitle("") 
+        .navigationBarHidden(true)
         .background(Color.background)
         .onChange(of: selectedGenre) { _ in
             getWebtoonCount()
@@ -142,35 +144,37 @@ struct GenreView: View {
     // 테이블 셀
     @ViewBuilder
     func getCell(idx: Int) -> some View {
-        VStack {
-            Image(uiImage:
-                    UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
-                    UIImage(named: "no_image")!
-            )
-            .resizable()
-            .scaledToFill()
-            .frame(width: GlobalVar.screenW / 3, height: 105, alignment: .top)
-            .clipped()
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(webtoonData.webtoons[idx].title)
-                        .font(.system(size: 14, weight: .heavy))
-                        .foregroundColor(.mainText)
-                        .lineLimit(1)
-                    Text(webtoonData.webtoons[idx].author)
-                        .font(.system(size: 10, weight: .heavy))
-                        .foregroundColor(.subText)
-                        .lineLimit(1)
+        NavigationLink(destination: DetailView(webtoonIndex: idx)) {
+            VStack {
+                Image(uiImage:
+                        UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
+                        UIImage(named: "no_image")!
+                )
+                .resizable()
+                .scaledToFill()
+                .frame(width: GlobalVar.screenW / 3, height: 105, alignment: .top)
+                .clipped()
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(webtoonData.webtoons[idx].title)
+                            .font(.system(size: 14, weight: .heavy))
+                            .foregroundColor(.mainText)
+                            .lineLimit(1)
+                        Text(webtoonData.webtoons[idx].author)
+                            .font(.system(size: 10, weight: .heavy))
+                            .foregroundColor(.subText)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
+                        .resizable()
+                        .frame(width: 19, height: 19)
                 }
-                Spacer()
-                Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
-                    .resizable()
-                    .frame(width: 19, height: 19)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 5)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 5)
+            .frame(width: GlobalVar.screenW / 3, height: 155)
         }
-        .frame(width: GlobalVar.screenW / 3, height: 155)
     }
     
     // 현재 선택된 장르와 같은지 비교
