@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DrawingStyleView: View {
+struct StyleView: View {
     @EnvironmentObject var webtoonData: WebtoonData
     
     init() {
@@ -29,6 +29,8 @@ struct DrawingStyleView: View {
                 }
             }
         }
+        .navigationBarTitle("")
+        .navigationBarHidden(true)
         .background(Color.background)
     }
     
@@ -77,32 +79,34 @@ struct DrawingStyleView: View {
     // 테이블 셀
     @ViewBuilder
     func getCell(idx: Int) -> some View {
-        VStack {
-            Image(uiImage:
-                    UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
-                    UIImage(named: "no_image")!
-            )
-            .resizable()
-            .scaledToFill()
-            .frame(width: 81, height: 81, alignment: .top)
-            .clipped()
-            HStack{
-                Text(webtoonData.webtoons[idx].title)
-                    .font(.system(size: 10, weight: .heavy))
-                    .foregroundColor(.mainText)
-                    .lineLimit(1)
-                Spacer()
-                Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
-                    .resizable()
-                    .frame(width: 13, height: 13)
+        NavigationLink(destination: DetailView(webtoonIndex: idx)) {
+            VStack {
+                Image(uiImage:
+                        UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
+                        UIImage(named: "no_image")!
+                )
+                .resizable()
+                .scaledToFill()
+                .frame(width: 81, height: 81, alignment: .top)
+                .clipped()
+                HStack{
+                    Text(webtoonData.webtoons[idx].title)
+                        .font(.system(size: 10, weight: .heavy))
+                        .foregroundColor(.mainText)
+                        .lineLimit(1)
+                    Spacer()
+                    Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
+                        .resizable()
+                        .frame(width: 13, height: 13)
+                }
             }
+            .frame(width: 81, height: 102)
         }
-        .frame(width: 81, height: 102)
     }
 }
 
 struct DrawingStyleView_Previews: PreviewProvider {
     static var previews: some View {
-        DrawingStyleView()
+        StyleView()
     }
 }
