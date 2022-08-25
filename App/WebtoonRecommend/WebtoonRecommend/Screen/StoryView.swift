@@ -9,11 +9,7 @@ import SwiftUI
 
 struct StoryView: View {
     @EnvironmentObject var webtoonData: WebtoonData
-    
-    init() {
-        print("-- StoryView init!! --")
-    }
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(title: "스토리")
@@ -83,7 +79,7 @@ struct StoryView: View {
     // 테이블 셀
     @ViewBuilder
     func getCell(idx: Int) -> some View {
-        NavigationLink(destination: DetailView(webtoonIndex: idx)) {
+        NavigationLink(destination: DetailView(webtoon: webtoonData.webtoons[idx]).environmentObject(webtoonData)) {
             VStack {
                 Image(uiImage:
                         UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
