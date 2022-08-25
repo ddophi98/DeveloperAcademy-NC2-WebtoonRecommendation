@@ -184,6 +184,7 @@ class MyWebCrawling:
 
         # 요일별로 만든 dataframe 모두 합치고 기존 것들은 지우기
         total_td = pd.concat(day_tds)
+        total_td = total_td.drop_duplicates(['title'])
         for filename in filenames:
             ut.delete_csv(filename)
 

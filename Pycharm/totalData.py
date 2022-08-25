@@ -51,7 +51,9 @@ class TotalData:
         my_total_data['story'] = wd.story_list
         my_total_data['platform'] = wd.platform_list
         my_total_data['url'] = wd.url_list
-        # my_total_data.set_index('id', inplace=True)
+
+        my_total_data = my_total_data.drop_duplicates(['title'])
+        my_total_data.set_index('id', inplace=True)
 
         return my_total_data
 
@@ -59,7 +61,7 @@ class TotalData:
     def merge_total_data(tds):
         TotalData.total_data = pd.concat(tds)
         first_td_len = len(tds[0])
-        TotalData.total_data['id'] = TotalData.total_data['id'][:first_td_len].tolist() + [x + first_td_len for x in TotalData.total_data['id'][first_td_len:].tolist()]
+        TotalData.total_data['id'] = [i for i in range(len(TotalData.total_data))]
         TotalData.total_data.set_index('id', inplace=True)
         TotalData.total_data = TotalData.total_data.loc[:, ~TotalData.total_data.columns.str.contains('^Unnamed')]
 

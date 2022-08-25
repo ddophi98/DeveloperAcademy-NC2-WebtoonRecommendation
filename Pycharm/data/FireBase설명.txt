@@ -1,0 +1,13 @@
+Firebase 연동하기
+
+1. csv파일을 Json 파일로 바꾸기 (https://www.convertcsv.com/csv-to-json.htm)
+
+2. Json 파일을 열어서 제일 바깥쪽에 
+   { "webtoonInfo":   ...   } 
+   { "clusterWord":   ...   }   추가하기
+
+3. csv-to-firebase 폴더에 파일 교체하기 (C:\Users\light\csv-to-firebase)
+
+4. 터미널 열어서 node import.js 입력하기
+
+5. 에러가 난다면 줄바꿈이 인식안되는 것이니 줄바꿈만 없애주기

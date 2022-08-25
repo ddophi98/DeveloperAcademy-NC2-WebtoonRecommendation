@@ -7,8 +7,9 @@ import matplotlib.pyplot as plt
 class MyStyleClustering:
     max_dim = 32
 
-    def __init__(self, data):
+    def __init__(self, data, k):
         self.data = data
+        self.k = k
 
     # 이미지 크기 바꾸기
     def resize_img(self, path_to_img):
@@ -61,14 +62,14 @@ class MyStyleClustering:
         reduced_style_info_list = svd.fit_transform(style_info_list)
         return reduced_style_info_list
 
-    def kmeans_cluster(self, style_info_list, k=10):
-        kmeans = KMeans(n_clusters=k)
+    def kmeans_cluster(self, style_info_list):
+        kmeans = KMeans(n_clusters=self.k)
         pred = kmeans.fit_predict(style_info_list)
         return pred
 
     def print_cluster_details(self, pred):
         labels = pred.tolist()
-        for num in range(10):
+        for num in range(self.k):
             titles = [self.data['title'].tolist()[idx] for idx, label in enumerate(labels) if label == num]
             print("label: " + str(num))
             print(titles)
