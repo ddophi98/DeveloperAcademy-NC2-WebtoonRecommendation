@@ -138,7 +138,7 @@ struct DetailView: View {
                 .foregroundColor(.subText)
             Spacer()
             Button {
-                
+                openUrl(link: curWebtoon.url)
             } label: {
                 HStack(spacing: 4) {
                     Text("웹툰 보러 가기")
@@ -256,5 +256,11 @@ struct DetailView: View {
             }
             .frame(width: 81, height: 102)
         }
+    }
+    
+    // 해당 웹툰 url 열어주기
+    func openUrl(link: String) {
+        guard let url = URL(string: link), UIApplication.shared.canOpenURL(url) else { return }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
