@@ -178,6 +178,7 @@ class WebtoonData: ObservableObject {
             platform: jsonData.platform,
             story: jsonData.story,
             thumbnail: image,
+            url: jsonData.url,
             clusterByStory1: jsonData.clusterByStory1,
             clusterByStory2: jsonData.clusterByStory2,
             clusterByStyle: jsonData.clusterByStyle
@@ -211,12 +212,13 @@ struct Webtoon: Codable {
     var platform: String
     var story: String
     var thumbnail: Data
+    var url: String
     var clusterByStory1: Int
     var clusterByStory2: Int
     var clusterByStyle: Int
     
     static func makeDefault() -> Webtoon {
-        return Webtoon(id: 0, title: "제목", author: "작가", day: "요일", genre: "장르", platform: "플랫폼", story: "스토리", thumbnail: UIImage(named: "no_image")!.pngData()!, clusterByStory1: 0, clusterByStory2: 0, clusterByStyle: 0)
+        return Webtoon(id: 0, title: "제목", author: "작가", day: "요일", genre: "장르", platform: "플랫폼", story: "스토리", thumbnail: UIImage(named: "no_image")!.pngData()!, url: "", clusterByStory1: 0, clusterByStory2: 0, clusterByStyle: 0)
     }
 }
 
@@ -229,6 +231,7 @@ struct WebtoonJson: Codable {
     var platform: String
     var story: String
     var thumbnailUrl: String
+    var url: String
     var clusterByStory1: Int
     var clusterByStory2: Int
     var clusterByStyle: Int
@@ -242,6 +245,7 @@ struct WebtoonJson: Codable {
         case platform = "platform"
         case story = "story"
         case thumbnailUrl = "thumbnail"
+        case url = "url"
         case clusterByStory1 = "cluster_story1"
         case clusterByStory2 = "cluster_story2"
         case clusterByStyle = "cluster_style"
