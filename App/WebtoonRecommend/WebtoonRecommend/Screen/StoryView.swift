@@ -12,7 +12,7 @@ struct StoryView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView(title: "스토리")
+            HeaderView(webtoonData: webtoonData, title: "스토리")
             if webtoonData.isFinishSavingAll {
                 getContentView()
             } else if webtoonData.isError {
@@ -33,20 +33,27 @@ struct StoryView: View {
     // 전체 웹툰에서 스토리로 묶은 각각의 클러스터 그룹
     @ViewBuilder
     func getContentView() -> some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible())], spacing: 0) {
-                ForEach(webtoonData.storyCluster[Genre.All.string]!.indices, id: \.self) { index in
-                    getClusterGroup(groupIdx: index)
+        ZStack(alignment: .top) {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible())], spacing: 0) {
+                    ForEach(webtoonData.storyCluster[Genre.All.string]!.indices, id: \.self) { index in
+                        getClusterGroup(groupIdx: index)
+                    }
                 }
             }
+            Rectangle()
+                .fill(Color.mainText)
+                .frame(height: GlobalVar.lineWidth)
         }
-        .padding(.top, 10)
     }
     
     // 테이블 셀로 이루어진 특정 클러스터 그룹
     @ViewBuilder
     func getClusterGroup(groupIdx: Int) -> some View {
         VStack(spacing: 0) {
+            Rectangle()
+                .fill(Color.mainText)
+                .frame(height: GlobalVar.lineWidth)
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     ForEach(webtoonData.clusterWords[groupIdx].words, id: \.self) { word in
@@ -68,11 +75,6 @@ struct StoryView: View {
             .frame(height: 150)
             .padding(.horizontal, 6)
             .padding(.top, 12)
-            if groupIdx != webtoonData.storyCluster["전체"]!.count - 1 {
-                Rectangle()
-                    .fill(Color.mainText)
-                    .frame(height: GlobalVar.lineWidth)
-            }
         }
     }
     
@@ -95,7 +97,7 @@ struct StoryView: View {
                         .foregroundColor(.mainText)
                         .lineLimit(1)
                     Spacer()
-                    Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
+                    Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                         .resizable()
                         .frame(width: 13, height: 13)
                 }

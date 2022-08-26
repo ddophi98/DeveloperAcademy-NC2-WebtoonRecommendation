@@ -15,17 +15,21 @@ struct DetailView: View {
     
     init(webtoon: Webtoon) {
         self.curWebtoon = webtoon
-        UINavigationBar.appearance().tintColor = UIColor(Color.mainText)
     }
     
     var body: some View {
         VStack(spacing: 0) {
             getBackBarView()
-            ScrollView {
-                VStack(spacing: 0) {
-                    getWebtoonInfoView()
-                    getSimilarWebtoonsView()
-                    Spacer()
+            ZStack(alignment: .top) {
+                Rectangle()
+                    .fill(Color.mainText)
+                    .frame(height: GlobalVar.lineWidth)
+                ScrollView {
+                    VStack(spacing: 0) {
+                        getWebtoonInfoView()
+                        getSimilarWebtoonsView()
+                        Spacer()
+                    }
                 }
             }
         }
@@ -53,30 +57,32 @@ struct DetailView: View {
     // 백버튼 있는 커스텀 네비게이션 바
     @ViewBuilder
     func getBackBarView() -> some View {
-        VStack(spacing: 0) {
-            HStack {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(Color.mainText)
-                        .font(.system(size: 20))
-                }
-                Spacer()
+        
+        HStack {
+            Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(Color.mainText)
+                    .font(.system(size: 20))
             }
-            .padding(15)
-            .background(Color.background)
-            .frame(height: 46)
-            Rectangle()
-                .fill(Color.mainText)
-                .frame(height: GlobalVar.lineWidth)
+            Spacer()
         }
+        .padding(15)
+        .background(Color.background)
+        .frame(height: 46)
+        .padding(.bottom, 10)
+        
+        
     }
     
     // 웹툰의 각종 정보들을 보여주는 뷰
     @ViewBuilder
     func getWebtoonInfoView() -> some View {
         VStack(spacing: 0) {
+            Rectangle()
+                .fill(Color.mainText)
+                .frame(height: GlobalVar.lineWidth)
             getOtherInfoView()
             Rectangle()
                 .fill(Color.mainText)
@@ -106,7 +112,7 @@ struct DetailView: View {
             HStack(alignment: .top) {
                 getTextInfoView()
                 Spacer()
-                Image(curWebtoon.platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
+                Image(curWebtoon.platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                     .resizable()
                     .frame(width: 16, height: 16)
             }
@@ -239,7 +245,7 @@ struct DetailView: View {
                     .foregroundColor(.mainText)
                     .lineLimit(1)
                 Spacer()
-                Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
+                Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                     .resizable()
                     .frame(width: 13, height: 13)
             }

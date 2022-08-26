@@ -16,7 +16,7 @@ struct GenreView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView(title: "장르")
+            HeaderView(webtoonData: webtoonData, title: "장르")
             if webtoonData.isFinishSavingAll {
                 getGenreListView()
                 getPlatformSelectView()
@@ -45,6 +45,9 @@ struct GenreView: View {
     // 장르 선택
     @ViewBuilder
     func getGenreListView() -> some View {
+        Rectangle()
+            .fill(Color.mainText)
+            .frame(height: GlobalVar.lineWidth)
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(Genre.allCases, id: \.self) { genre in
@@ -166,7 +169,7 @@ struct GenreView: View {
                             .lineLimit(1)
                     }
                     Spacer()
-                    Image(webtoonData.webtoons[idx].platform == "네이버웹툰" ? "naver_logo" : "kakao_logo")
+                    Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                         .resizable()
                         .frame(width: 19, height: 19)
                 }
