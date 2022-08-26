@@ -11,6 +11,7 @@ struct DetailView: View {
     @EnvironmentObject var webtoonData: WebtoonData
     @Environment(\.presentationMode) var presentationMode
     @State var isAllStroyShown = false
+    @State var canBeLonger = false
     let curWebtoon: Webtoon
     
     init(webtoon: Webtoon) {
@@ -162,16 +163,30 @@ struct DetailView: View {
                         .font(.system(size: 16, weight: .heavy))
                         .foregroundColor(.mainText)
                     HStack(alignment: .bottom) {
-                        Text(curWebtoon.story)
-                            .font(.system(size: 13, weight: .heavy))
-                            .foregroundColor(.subText)
-                            .lineLimit(isAllStroyShown ? nil : 3)
-                            .multilineTextAlignment(.leading)
+                        ZStack(alignment: .top) {
+                            if !canBeLonger {
+                                Text(curWebtoon.story)
+                                    .font(.system(size: 13, weight: .heavy))
+                                    .lineLimit(nil)
+                                    .overlay(
+                                        GeometryReader { proxy in
+                                            determineViewSpread(height: proxy.size.height)
+                                        }
+                                    )
+                            }
+                            Text(curWebtoon.story)
+                                .font(.system(size: 13, weight: .heavy))
+                                .foregroundColor(.subText)
+                                .lineLimit(canBeLonger ? (isAllStroyShown ? nil : 3) : nil)
+                                .multilineTextAlignment(.leading)
+                        }
                         Spacer()
-                        Image(systemName: isAllStroyShown ? "chevron.up" : "chevron.down")
-                            .font(.system(size: 12))
-                            .foregroundColor(.subText)
-                            .padding(.bottom, 4)
+                        if canBeLonger {
+                            Image(systemName: isAllStroyShown ? "chevron.up" : "chevron.down")
+                                .font(.system(size: 12))
+                                .foregroundColor(.subText)
+                                .padding(.bottom, 4)
+                        }
                     }
                 }
             }
@@ -262,5 +277,16 @@ struct DetailView: View {
     func openUrl(link: String) {
         guard let url = URL(string: link), UIApplication.shared.canOpenURL(url) else { return }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+    
+    // 스토리 나오는 뷰 높이 계산해서 펼치기 넣을지 결정하기
+    func determineViewSpread(height: CGFloat) -> some View {
+        return Text("")
+            .opacity(0)
+            .onAppear {
+                if height > 48 {
+                    canBeLonger = true
+                }
+            }
     }
 }
