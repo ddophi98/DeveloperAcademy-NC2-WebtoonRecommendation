@@ -91,6 +91,7 @@ struct StoryView: View {
                 .scaledToFill()
                 .frame(width: 81, height: 81, alignment: .top)
                 .clipped()
+                .cornerRadius(5)
                 HStack{
                     Text(webtoonData.webtoons[idx].title)
                         .font(.system(size: 10, weight: .heavy))
@@ -100,6 +101,7 @@ struct StoryView: View {
                     Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                         .resizable()
                         .frame(width: 13, height: 13)
+                        .cornerRadius(3)
                 }
             }
             .frame(width: 81, height: 102)

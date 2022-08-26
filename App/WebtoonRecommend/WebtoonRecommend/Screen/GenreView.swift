@@ -172,6 +172,7 @@ struct GenreView: View {
                     Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                         .resizable()
                         .frame(width: 19, height: 19)
+                        .cornerRadius(5)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 5)

@@ -131,6 +131,7 @@ struct SearchView: View {
                         Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                             .resizable()
                             .frame(width: 16, height: 16)
+                            .cornerRadius(4)
                     }
                     .padding(8)
                 }

@@ -114,7 +114,8 @@ struct DetailView: View {
                 Spacer()
                 Image(curWebtoon.platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
                     .resizable()
-                    .frame(width: 16, height: 16)
+                    .frame(width: 28, height: 28)
+                    .cornerRadius(7)
             }
             .padding(8)
         }
@@ -230,26 +231,30 @@ struct DetailView: View {
     // 테이블 셀
     @ViewBuilder
     func getCell(idx: Int) -> some View {
-        VStack {
-            Image(uiImage:
-                    UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
-                  UIImage(named: "no_image")!
-            )
-            .resizable()
-            .scaledToFill()
-            .frame(width: 81, height: 81, alignment: .top)
-            .clipped()
-            HStack{
-                Text(webtoonData.webtoons[idx].title)
-                    .font(.system(size: 10, weight: .heavy))
-                    .foregroundColor(.mainText)
-                    .lineLimit(1)
-                Spacer()
-                Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
-                    .resizable()
-                    .frame(width: 13, height: 13)
+        NavigationLink(destination: DetailView(webtoon: webtoonData.webtoons[idx]).environmentObject(webtoonData)) {
+            VStack {
+                Image(uiImage:
+                        UIImage(data: webtoonData.webtoons[idx].thumbnail) ??
+                      UIImage(named: "no_image")!
+                )
+                .resizable()
+                .scaledToFill()
+                .frame(width: 81, height: 81, alignment: .top)
+                .clipped()
+                .cornerRadius(5)
+                HStack{
+                    Text(webtoonData.webtoons[idx].title)
+                        .font(.system(size: 10, weight: .heavy))
+                        .foregroundColor(.mainText)
+                        .lineLimit(1)
+                    Spacer()
+                    Image(webtoonData.webtoons[idx].platform == Platform.Naver.string ? "naver_logo" : "kakao_logo")
+                        .resizable()
+                        .frame(width: 13, height: 13)
+                        .cornerRadius(3)
+                }
             }
+            .frame(width: 81, height: 102)
         }
-        .frame(width: 81, height: 102)
     }
 }
