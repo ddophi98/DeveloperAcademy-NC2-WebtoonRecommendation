@@ -35,7 +35,7 @@ def do_web_crawling():
     print("--kakao webtoon crawling start--")
     if not os.path.isfile(kakao_csv_filename):
         # 데이터 양이 많아서 요일별로 끊어서 파일 만들고 합치기
-        kakao_td = wc.get_and_form_kakao_webtton_info_by_day()
+        kakao_td = wc.get_kakao_webtoon_info()
         ut.make_csv(kakao_csv_filename, kakao_td)
     else:
         kakao_td = ut.get_from_csv(kakao_csv_filename)
