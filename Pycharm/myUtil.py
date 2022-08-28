@@ -35,9 +35,13 @@ class MyUtil:
 
     @staticmethod
     def save_images(urls):
-        print("--images downloading start--")
-        for idx, url in enumerate(urls):
-            print("\r" + str(idx + 1) + "/" + str(len(urls)), end="")
-            request.urlretrieve(url, "data/images/thumbnail" + str(idx) + ".png")
-        print()
-        print("--images downloading end--")
+        if not os.path.isdir("data/images"):
+            os.makedirs("data/images")
+            print("--images downloading start--")
+            for idx, url in enumerate(urls):
+                print("\r" + str(idx + 1) + "/" + str(len(urls)), end="")
+                request.urlretrieve(url, "data/images/thumbnail" + str(idx) + ".png")
+            print()
+            print("--images downloading end--")
+        else:
+            print("--images already exist--")
