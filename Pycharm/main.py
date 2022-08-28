@@ -74,28 +74,25 @@ def do_clustering_by_story(story_ct, k_for_total=175):
     cluster_details_list.append(cluster_details)
     # story_ct.visualize(cluster_labels_for_whole)
 
-    # # 각 장르 안에서 클러스터링 하기
-    # cluster_labels_for_genre = [-1 for _ in range(len(td.total_data))]
-    # for genre in td.categories:
-    #     current_data_index = td.total_data.index[td.total_data['genre'] == genre].tolist()
-    #     current_data_index = list(map(int, current_data_index))
-    #     cluster_label = story_ct.kmeans_cluster(genre, current_data_index)
-    #     for i in range(len(current_data_index)):
-    #         cluster_labels_for_genre[current_data_index[i]] = cluster_label[i]
-    #     cluster_details = story_ct.get_cluster_details(genre)
-    #     cluster_details_list.append(cluster_details)
+    # 각 장르 안에서 클러스터링 하기
+    cluster_labels_for_genre = [-1 for _ in range(len(td.total_data))]
+    for genre in td.categories:
+        current_data_index = td.total_data.index[td.total_data['genre'] == genre].tolist()
+        current_data_index = list(map(int, current_data_index))
+        cluster_label = story_ct.kmeans_cluster(genre, current_data_index)
+        for i in range(len(current_data_index)):
+            cluster_labels_for_genre[current_data_index[i]] = cluster_label[i]
+        cluster_details = story_ct.get_cluster_details(genre)
+        cluster_details_list.append(cluster_details)
 
     print()
-    td.total_data["cluster_story1"] = cluster_labels_for_whole
-    # td.total_data["cluster_story2"] = cluster_labels_for_genre
+    td.total_data["cluster_story"] = cluster_labels_for_whole
+    td.total_data["cluster_story_in_genre"] = cluster_labels_for_genre
     td.cluster_details = pd.concat(cluster_details_list)
-    story_ct.compare_similarity("투신전생기", "cluster_story1")
-    # story_ct.compare_similarity("투신전생기", "cluster_story2")
     print("--kmeans story clustering end--")
 
 # style에 대한 k-means 클러스터링 하기
-def do_clustering_by_style(k):
-    style_ct = MyStyleClustering(td.total_data, k)
+def do_clustering_by_style(style_ct, k):
     # 이미지 로딩하기 (새로 하기 또는 저장된 데이터 불러오기)
     print("--images loading start--")
     if not os.path.isfile(images_filename):
@@ -110,17 +107,33 @@ def do_clustering_by_style(k):
     print("--style extraction end--")
     print("--kmeans style clustering start--")
     # 추출한 스타일로 k-means 클러스터링 하기
-    cluster_labels = style_ct.kmeans_cluster()
+    cluster_labels = style_ct.kmeans_cluster(k)
     td.total_data["cluster_style"] = cluster_labels
     style_ct.visualize(cluster_labels)
-    style_ct.compare_similarity("독립일기")
     print("--kmeans style clustering end--")
+
+# 각 클러스터에 대해 유사도가 높은 데이터만 따로 정리해놓기
+def arrange_high_similarity_webtoons(story_ct, style_ct):
+    print("-- similarity calculation start--")
+    cluster_story_group = []
+    cluster_story_group_in_genre = []
+    cluster_style_group = []
+    for idx, row in td.total_data.iterrows():
+        cluster_story_group.append(story_ct.compare_similarity(idx, row, "cluster_story"))
+        cluster_story_group_in_genre.append(story_ct.compare_similarity(idx, row, "cluster_story_in_genre"))
+        cluster_style_group.append(style_ct.compare_similarity(idx, row))
+    td.total_data["cluster_story_group"] = cluster_story_group
+    td.total_data["cluster_story_group_in_genre"] = cluster_story_group_in_genre
+    td.total_data["cluster_style_group"] = cluster_style_group
+    print("-- similarity calculation end--")
 
 if __name__ == '__main__':
     do_web_crawling()
     story_clustering = do_tokenize_and_vectorize()
+    style_clustering = MyStyleClustering(td.total_data)
     do_clustering_by_story(story_clustering, k_for_total=50)
-    do_clustering_by_style(k=50)
+    do_clustering_by_style(style_clustering, k=50)
+    arrange_high_similarity_webtoons(story_clustering, style_clustering)
     ut.save_images(td.total_data['thumbnail'])
     ut.make_csv(cluster_csv_filename, td.total_data)
     ut.make_csv(cluster_csv_filename, td.total_data)
