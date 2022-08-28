@@ -80,34 +80,21 @@ class MyStoryClustering:
         return cluster_details
 
     # 유사도 그래프로 비교해보기
-    def compare_similarity(self, item_title, cluster):
+    def compare_similarity(self, idx, row, cluster):
         self.data = self.data.sort_index()
 
-        # 해당 제목을 가진 웹툰이 어느 클러스터에 속해있고 인덱스는 몇인지 구하기
-        target_cluster = 0
-        target_webtoon_idx = 0
-        target_genre = ""
-
-        for idx, row in self.data.iterrows():
-            if row['title'] == item_title:
-                target_cluster = row[cluster]
-                target_webtoon_idx = idx
-                target_genre = row["genre"]
-                break
-        print("타겟 클러스터 번호:", target_cluster)
-        print("타겟 웹툰 인덱스:", target_webtoon_idx)
-        print("타겟 웹툰 장르:", target_genre)
+        # 해당 행의 웹툰이 어느 클러스터에 속해있고 인덱스는 몇인지 구하기
+        target_cluster = row[cluster]
+        target_webtoon_idx = idx
+        target_genre = row["genre"]
 
         # 해당 클러스트 안에 있는 웹툰들을 모두 구하기
-        if target_cluster == "cluster_story2":
+        if target_cluster == "cluster_story_in_genre":
             webtoons_in_target_cluster = self.data[(self.data[cluster] == target_cluster) & (self.data['genre'] == target_genre)]
         else:
             webtoons_in_target_cluster = self.data[self.data[cluster] == target_cluster]
 
         webtoons_idx = webtoons_in_target_cluster.index
-        print("유사도 비교 기준 웹툰:", item_title)
-        print("유사한 웹툰 인덱스:")
-        print(list(webtoons_idx))
 
         # 위에서 추출한 카테고리로 클러스터링된 문서들의 인덱스 중 비교기준문서를 제외한 다른 문서들과의 유사도 측정
         similarity = cosine_similarity(self.vectorized[target_webtoon_idx], self.vectorized[webtoons_idx])
@@ -122,42 +109,31 @@ class MyStoryClustering:
 
         # 앞에서 구한 인덱스로 유사도 행렬값도 정렬
         sorted_sim_values = similarity.reshape(-1)[sorted_idx]
-        print("유사도(내림차순 정렬):")
-        print(sorted_sim_values)
-        print()
 
-        # 그래프 생성
-        selected_sim_df = pd.DataFrame()
-        selected_sim_df['title'] = webtoons_in_target_cluster.iloc[sorted_idx]['title']
-        selected_sim_df['similarity'] = sorted_sim_values
+        # if idx == 0:
+        #     print("타겟 클러스터 번호:", target_cluster)
+        #     print("타겟 웹툰 인덱스:", target_webtoon_idx)
+        #     print("유사도 비교 기준 웹툰:", row['title'])
+        #     print("유사한 웹툰 인덱스:")
+        #     print(list(webtoons_idx))
+        #     print("유사도(내림차순 정렬):")
+        #     print(sorted_sim_values)
+        #     print(len(sorted_sim_values))
+        #     print(len(webtoons_idx[sorted_idx[:len([x for x in sorted_sim_values if x != 0])]]))
+        #     print()
+        #
+        #     # 그래프 생성
+        #     selected_sim_df = pd.DataFrame()
+        #     selected_sim_df['title'] = webtoons_in_target_cluster.iloc[sorted_idx]['title']
+        #     selected_sim_df['similarity'] = sorted_sim_values
+        #
+        #     plt.figure(figsize=(25, 10), dpi=60)
+        #     sns.barplot(data=selected_sim_df, x='similarity', y='title')
+        #     plt.title(row['title'])
+        #     plt.show()
 
-        plt.figure(figsize=(25, 10), dpi=60)
-        sns.barplot(data=selected_sim_df, x='similarity', y='title')
-        plt.title(item_title)
-        plt.show()
-
-    # def visualize(self, cluster_labels):
-    #     # print(self.vectorized.shape)
-    #     # svd = TruncatedSVD(n_components=2)
-    #     # reduced = svd.fit_transform(self.vectorized)
-    #
-    #     fig = plt.figure(figsize=(6,4))
-    #     colors = plt.cm.get_cmap("Spectral")(np.linspace(0, 1, len(set(cluster_labels))))
-    #     ax = fig.add_subplot(1, 1, 1)
-    #
-    #     for k, col in zip(range(len(colors)), colors):
-    #         my_members = (cluster_labels == k)
-    #         ax.plot(
-    #             self.vectorized[my_members, 0],
-    #             self.vectorized[my_members, 1],
-    #             'w',
-    #             markerfacecolor=col,
-    #             marker='.'
-    #         )
-    #     ax.set_title('K-Means')
-    #     plt.xlim(-0.25, 0.25)
-    #     plt.ylim(-0.25, 0.25)
-    #     plt.show()
+        # 높은 유사도 순으로 웹툰 인덱스 반환 (0인 것은 뺌)
+        return list(webtoons_idx[sorted_idx[:len([x for x in sorted_sim_values if x != 0])]])
 
 
 

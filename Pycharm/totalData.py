@@ -5,9 +5,12 @@ class TotalData:
     # 전체 정보를 저장할 변수
     total_data = pd.DataFrame({
         "id": [],
-        "cluster_story1": [],
-        "cluster_story2": [],
+        "cluster_story": [],
+        "cluster_story_in_genre": [],
         "cluster_style": [],
+        "cluster_story_group": [],
+        "cluster_story_group_in_genre": [],
+        "cluster_style_group": [],
         "thumbnail": [],
         "title": [],
         "author": [],

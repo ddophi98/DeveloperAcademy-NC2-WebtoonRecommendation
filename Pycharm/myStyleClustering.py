@@ -10,9 +10,8 @@ import pandas as pd
 class MyStyleClustering:
     max_dim = 32
 
-    def __init__(self, data, k):
+    def __init__(self, data):
         self.data = data
-        self.k = k
         self.style_info_list = np.array([])
 
     # 이미지 크기 바꾸기
@@ -65,18 +64,10 @@ class MyStyleClustering:
         svd = TruncatedSVD(n_components=2)
         self.style_info_list = np.array(svd.fit_transform(infos))
 
-    def kmeans_cluster(self):
-        kmeans = KMeans(n_clusters=self.k)
+    def kmeans_cluster(self, k):
+        kmeans = KMeans(n_clusters=k)
         pred = kmeans.fit_predict(self.style_info_list)
         return pred
-
-    def print_cluster_details(self, pred):
-        labels = pred.tolist()
-        for num in range(self.k):
-            titles = [self.data['title'].tolist()[idx] for idx, label in enumerate(labels) if label == num]
-            print("label: " + str(num))
-            print(titles)
-            print()
 
     def visualize(self, cluster_labels):
         fig = plt.figure(figsize=(6,4))
@@ -97,28 +88,17 @@ class MyStyleClustering:
         plt.show()
 
     # 유사도 그래프로 비교해보기
-    def compare_similarity(self, item_title):
+    def compare_similarity(self, idx, row):
         self.data = self.data.sort_index()
 
-        # 해당 제목을 가진 웹툰이 어느 클러스터에 속해있고 인덱스는 몇인지 구하기
-        target_cluster = 0
-        target_webtoon_idx = 0
-
-        for idx, row in self.data.iterrows():
-            if row['title'] == item_title:
-                target_cluster = row["cluster_style"]
-                target_webtoon_idx = idx
-                break
-        print("타겟 클러스터 번호:", target_cluster)
-        print("타겟 웹툰 인덱스:", target_webtoon_idx)
+        # 해당 행의 웹툰이 어느 클러스터에 속해있고 인덱스는 몇인지 구하기
+        target_cluster = row["cluster_style"]
+        target_webtoon_idx = idx
 
         # 해당 클러스트 안에 있는 웹툰들을 모두 구하기
         webtoons_in_target_cluster = self.data[self.data["cluster_style"] == target_cluster]
 
         webtoons_idx = webtoons_in_target_cluster.index
-        print("유사도 비교 기준 웹툰:", item_title)
-        print("유사한 웹툰 인덱스:")
-        print(list(webtoons_idx))
 
         # 위에서 추출한 카테고리로 클러스터링된 문서들의 인덱스 중 비교기준문서를 제외한 다른 문서들과의 유사도 측정
         similarity = cosine_similarity(self.style_info_list[target_webtoon_idx].reshape(1, -1), self.style_info_list[webtoons_idx])
@@ -133,19 +113,31 @@ class MyStyleClustering:
 
         # 앞에서 구한 인덱스로 유사도 행렬값도 정렬
         sorted_sim_values = similarity.reshape(-1)[sorted_idx]
-        print("유사도(내림차순 정렬):")
-        print(sorted_sim_values)
-        print()
 
-        # 그래프 생성
-        selected_sim_df = pd.DataFrame()
-        selected_sim_df['title'] = webtoons_in_target_cluster.iloc[sorted_idx]['title']
-        selected_sim_df['similarity'] = sorted_sim_values
+        # if idx == 0:
+        #     print("타겟 클러스터 번호:", target_cluster)
+        #     print("타겟 웹툰 인덱스:", target_webtoon_idx)
+        #     print("유사도 비교 기준 웹툰:", row['title'])
+        #     print("유사한 웹툰 인덱스:")
+        #     print(list(webtoons_idx))
+        #     print("유사도(내림차순 정렬):")
+        #     print(sorted_sim_values)
+        #     print(len(sorted_sim_values))
+        #     print(len(webtoons_idx[sorted_idx[:len([x for x in sorted_sim_values if x != 0])]]))
+        #     print()
+        #
+        #     # 그래프 생성
+        #     selected_sim_df = pd.DataFrame()
+        #     selected_sim_df['title'] = webtoons_in_target_cluster.iloc[sorted_idx]['title']
+        #     selected_sim_df['similarity'] = sorted_sim_values
+        #
+        #     plt.figure(figsize=(25, 10), dpi=60)
+        #     sns.barplot(data=selected_sim_df, x='similarity', y='title')
+        #     plt.title(row['title'])
+        #     plt.show()
 
-        plt.figure(figsize=(25, 10), dpi=60)
-        sns.barplot(data=selected_sim_df, x='similarity', y='title')
-        plt.title(item_title)
-        plt.show()
+        # 높은 유사도 순으로 웹툰 인덱스 반환 (0인 것은 뺌)
+        return list(webtoons_idx[sorted_idx[:len([x for x in sorted_sim_values if x != 0])]])
 
 # 스타일 추출하는 모델 정의하기
 class StyleContentModel(tf.keras.models.Model):
