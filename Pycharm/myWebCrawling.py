@@ -14,20 +14,18 @@ import os.path
 
 
 class MyWebCrawling:
-    nw_url = 'https://comic.naver.com/webtoon/weekday'
+    nw_url = 'https://comic.naver.com/webtoon/'
     kw_url = 'https://page.kakao.com/main?categoryUid=10&subCategoryUid=1002'
     chromedriver_url = 'C:/Storage/Storage_Coding/PycharmProjects/SideProjcet-WebtoonRecommendation/Pycharm/chromedriver'
     login_id = 'barezebe119@naver.com'
     login_pw = 'Whiteout00'
 
-    # 네이버 웹툰 각각의 정보 가져오기
-    def get_naver_webtoon_info(self):
-        wd = WebtoonData()
-        html = requests.get(self.nw_url).text
+    def get_info(self, wd, webtoon_type):
+        driver = webdriver.Chrome(self.chromedriver_url)
+        html = requests.get(self.nw_url+webtoon_type).text
         soup = bs(html, 'html.parser')
         title = soup.find_all('a', {'class': 'title'})
-        driver = webdriver.Chrome(self.chromedriver_url)
-        driver.get(self.nw_url)
+        driver.get(self.nw_url+webtoon_type)
 
         # 각각의 웹툰 정보 수집 시작
         idx = 0
@@ -43,8 +41,11 @@ class MyWebCrawling:
             soup = bs(html, 'html.parser')
 
             # 요일 수집
-            day = soup.find_all('ul', {'class': 'category_tab'})
-            day = day[0].find('li', {'class': 'on'}).text[0:1]
+            if webtoon_type == "finish":
+                day = "완결"
+            else:
+                day = soup.find_all('ul', {'class': 'category_tab'})
+                day = day[0].find('li', {'class': 'on'}).text[0:1]
 
             # 요일 두 개 이상이면 요일만 추가함
             current_title = title[i].text
@@ -80,11 +81,16 @@ class MyWebCrawling:
             driver.back()
             sleep(0.5)
 
+    # 네이버 웹툰 각각의 정보 가져오기
+    def get_naver_webtoon_info(self):
+        wd = WebtoonData()
+        self.get_info(wd, "weekday")
+        self.get_info(wd, "finish")
         print()
         return wd
 
     # 카카오 웹툰 각각의 정보 가져오고 파일로까지 저장하기 (요일 단위로)
-    def get_and_form_kakao_webtton_info_by_day(self):
+    def get_kakao_webtoon_info(self):
         driver = webdriver.Chrome(self.chromedriver_url)
         action = ActionChains(driver)
         driver.get(self.kw_url)
@@ -92,8 +98,10 @@ class MyWebCrawling:
         # 로그인 해야 들어갈 수 있는 것들 때문에 일단 로그인하기
         self.login_on_kakao_page(driver)
 
-        # 완결 웹툰은 일단 제외하고 요일별 페이지 가져오기
-        days = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[:-1]
+        # # 완결 웹툰은 일단 제외하고 요일별 페이지 가져오기
+        # days = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[:-1]
+        # 완결 웹툰 포함해서 요일별 페이지 가져오기
+        days = driver.find_elements(By.CLASS_NAME, "e1201h8a0")
 
         day_tds = []
         filenames = []
@@ -113,7 +121,10 @@ class MyWebCrawling:
             # 요일별 페이지에 있는 웹툰들 가져오기 (스크롤해야 보이는 것 까지 포함)
             day = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[i]
             action.move_to_element(day).click().perform()
-            self.do_scroll_down(10, driver)
+            if i == 7:
+                self.do_scroll_down(60, driver)
+            else:
+                self.do_scroll_down(10, driver)
             webtoons = driver.find_elements(By.CLASS_NAME, "css-qm6qod")
 
             # 웹툰별로 정보 저장하기
@@ -146,7 +157,10 @@ class MyWebCrawling:
 
                 title = soup.find('h2', {'class': 'css-jgjrt'}).text
                 day = soup.find_all('div', {'class': 'css-7a7cma'})[0].text
-                day = day[:day.find(" 연재")]
+                day_word_end_idx = day.find(" 연재")
+                if day_word_end_idx == -1:
+                    day_word_end_idx = day.find(" ")
+                day = day[:day_word_end_idx]
                 author = soup.find_all('div', {'class': 'css-7a7cma'})[1].text
                 author = author.replace(',', ', ')
                 genre = soup.find('div', {'class': 'infoBox'})
