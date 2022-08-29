@@ -218,13 +218,13 @@ struct DetailView: View {
                                 }
                             }
                         case "story":
-                            ForEach(webtoonData.storyCluster[curWebtoon.genre]![curWebtoon.clusterByStory2], id: \.self) { index in
+                            ForEach(curWebtoon.clusterGroupByStroyInGenre, id: \.self) { index in
                                 if curWebtoon.id != index {
                                     getCell(idx: index)
                                 }
                             }
                         case "style":
-                            ForEach(webtoonData.styleCluster[curWebtoon.clusterByStyle], id: \.self) { index in
+                            ForEach(curWebtoon.clusterGroupByStyle, id: \.self) { index in
                                 if curWebtoon.id != index {
                                     getCell(idx: index)
                                 }

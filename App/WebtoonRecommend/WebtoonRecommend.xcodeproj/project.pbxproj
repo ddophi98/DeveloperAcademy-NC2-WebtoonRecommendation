@@ -25,6 +25,7 @@
 		BC694A3E28B6F70900E69C4E /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC694A3D28B6F70900E69C4E /* DetailView.swift */; };
 		BC694A4228B7005300E69C4E /* NavigationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC694A4128B7005300E69C4E /* NavigationExtension.swift */; };
 		BC694A4728B7561900E69C4E /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC694A4628B7561900E69C4E /* SearchView.swift */; };
+		BC694A4B28BB59A300E69C4E /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC694A4A28BB59A300E69C4E /* StringExtension.swift */; };
 		BC7CCEF128ACB0290055E771 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */; };
 		BC8DD30328AB716900B27840 /* WebtoonRecommendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */; };
 		BC8DD30528AB716900B27840 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8DD30428AB716900B27840 /* ContentView.swift */; };
@@ -52,6 +53,7 @@
 		BC694A3D28B6F70900E69C4E /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		BC694A4128B7005300E69C4E /* NavigationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationExtension.swift; sourceTree = "<group>"; };
 		BC694A4628B7561900E69C4E /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		BC694A4A28BB59A300E69C4E /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		BC7CCEF028ACB0290055E771 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BC8DD2FF28AB716900B27840 /* WebtoonRecommend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebtoonRecommend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC8DD30228AB716900B27840 /* WebtoonRecommendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebtoonRecommendApp.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			children = (
 				BC0F94AC28AF5AAC007677C9 /* ColorExtension.swift */,
 				BC694A4128B7005300E69C4E /* NavigationExtension.swift */,
+				BC694A4A28BB59A300E69C4E /* StringExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				BC694A3428B46FAA00E69C4E /* ProgressLoadingView.swift in Sources */,
 				BC694A2A28AF6C6200E69C4E /* LottieView.swift in Sources */,
 				BC0F94AD28AF5AAC007677C9 /* ColorExtension.swift in Sources */,
+				BC694A4B28BB59A300E69C4E /* StringExtension.swift in Sources */,
 				BC694A3228B46F9400E69C4E /* HeaderView.swift in Sources */,
 				BC694A3828B46FBD00E69C4E /* ErrorView.swift in Sources */,
 			);
