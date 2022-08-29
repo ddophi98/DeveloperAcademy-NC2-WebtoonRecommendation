@@ -83,15 +83,15 @@ class WebtoonData: ObservableObject {
             if clusterNumsDict[webtoon.genre] == nil {
                 clusterNumsDict[webtoon.genre] = Set<Int>()
             }
-            clusterNumsDict["전체"]!.insert(webtoon.clusterByStory1)
-            clusterNumsDict[webtoon.genre]!.insert(webtoon.clusterByStory2)
+            clusterNumsDict["전체"]!.insert(webtoon.clusterByStory)
+            clusterNumsDict[webtoon.genre]!.insert(webtoon.clusterByStoryInGenre)
         }
         for key in clusterNumsDict.keys {
             storyCluster[key] = Array(repeating: [Int](), count: clusterNumsDict[key]!.count)
         }
         for idx in webtoons.indices {
-            storyCluster["전체"]![webtoons[idx].clusterByStory1].append(idx)
-            storyCluster[webtoons[idx].genre]![webtoons[idx].clusterByStory2].append(idx)
+            storyCluster["전체"]![webtoons[idx].clusterByStory].append(idx)
+            storyCluster[webtoons[idx].genre]![webtoons[idx].clusterByStoryInGenre].append(idx)
         }
         print(storyCluster["판타지"]![2])
     }
@@ -169,6 +169,31 @@ class WebtoonData: ObservableObject {
             image = thumbnail!
         }
 
+        var sliced = jsonData.clusterGroupByStory.slice(start: 1, end: jsonData.clusterGroupByStory.count-1)
+        var strArray = sliced.components(separatedBy: ", ")
+        var clusterGroupByStory = [Int]()
+        if strArray[0] != "" {
+            clusterGroupByStory = strArray.map{Int($0)!}
+        }
+        
+        sliced = jsonData.clusterGroupByStroyInGenre.slice(start: 1, end: jsonData.clusterGroupByStroyInGenre.count-1)
+        strArray = sliced.components(separatedBy: ", ")
+        var clusterGroupByStroyInGenre = [Int]()
+        if strArray[0] != "" {
+            clusterGroupByStroyInGenre = strArray.map{Int($0)!}
+        }
+        
+        print()
+        print(jsonData.clusterGroupByStyle)
+        sliced = jsonData.clusterGroupByStyle.slice(start: 1, end: jsonData.clusterGroupByStyle.count-1)
+        print(sliced)
+        strArray = sliced.components(separatedBy: ", ")
+        var clusterGroupByStyle = [Int]()
+        if strArray[0] != "" {
+            clusterGroupByStyle = strArray.map{Int($0)!}
+        }
+        
+
         let newWebtoon = Webtoon(
             id: jsonData.id,
             title: jsonData.title,
@@ -179,9 +204,12 @@ class WebtoonData: ObservableObject {
             story: jsonData.story,
             thumbnail: image,
             url: jsonData.url,
-            clusterByStory1: jsonData.clusterByStory1,
-            clusterByStory2: jsonData.clusterByStory2,
-            clusterByStyle: jsonData.clusterByStyle
+            clusterByStory: jsonData.clusterByStory,
+            clusterByStoryInGenre: jsonData.clusterByStoryInGenre,
+            clusterByStyle: jsonData.clusterByStyle,
+            clusterGroupByStory: clusterGroupByStory,
+            clusterGroupByStroyInGenre: clusterGroupByStroyInGenre,
+            clusterGroupByStyle: clusterGroupByStyle
         )
         webtoons.append(newWebtoon)
     }
@@ -213,12 +241,15 @@ struct Webtoon: Codable {
     var story: String
     var thumbnail: Data
     var url: String
-    var clusterByStory1: Int
-    var clusterByStory2: Int
+    var clusterByStory: Int
+    var clusterByStoryInGenre: Int
     var clusterByStyle: Int
+    var clusterGroupByStory: [Int]
+    var clusterGroupByStroyInGenre: [Int]
+    var clusterGroupByStyle: [Int]
     
     static func makeDefault() -> Webtoon {
-        return Webtoon(id: 0, title: "제목", author: "작가", day: "요일", genre: "장르", platform: "플랫폼", story: "스토리", thumbnail: UIImage(named: "no_image")!.pngData()!, url: "", clusterByStory1: 0, clusterByStory2: 0, clusterByStyle: 0)
+        return Webtoon(id: 0, title: "제목", author: "작가", day: "요일", genre: "장르", platform: "플랫폼", story: "스토리", thumbnail: UIImage(named: "no_image")!.pngData()!, url: "", clusterByStory: 0, clusterByStoryInGenre: 0, clusterByStyle: 0, clusterGroupByStory: [], clusterGroupByStroyInGenre: [], clusterGroupByStyle: [])
     }
 }
 
@@ -232,9 +263,12 @@ struct WebtoonJson: Codable {
     var story: String
     var thumbnailUrl: String
     var url: String
-    var clusterByStory1: Int
-    var clusterByStory2: Int
+    var clusterByStory: Int
+    var clusterByStoryInGenre: Int
     var clusterByStyle: Int
+    var clusterGroupByStory: String
+    var clusterGroupByStroyInGenre: String
+    var clusterGroupByStyle: String
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -246,9 +280,12 @@ struct WebtoonJson: Codable {
         case story = "story"
         case thumbnailUrl = "thumbnail"
         case url = "url"
-        case clusterByStory1 = "cluster_story1"
-        case clusterByStory2 = "cluster_story2"
+        case clusterByStory = "cluster_story"
+        case clusterByStoryInGenre = "cluster_story_in_genre"
         case clusterByStyle = "cluster_style"
+        case clusterGroupByStory = "cluster_story_group"
+        case clusterGroupByStroyInGenre = "cluster_story_group_in_genre"
+        case clusterGroupByStyle = "cluster_style_group"
     }
 }
 
