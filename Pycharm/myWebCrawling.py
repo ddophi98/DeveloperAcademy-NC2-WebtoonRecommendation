@@ -20,18 +20,19 @@ class MyWebCrawling:
     login_id = 'barezebe119@naver.com'
     login_pw = 'Whiteout00'
 
-    def get_info(self, wd, webtoon_type):
+    def get_weekday_info(self):
         driver = webdriver.Chrome(self.chromedriver_url)
-        html = requests.get(self.nw_url+webtoon_type).text
+        html = requests.get(self.nw_url+"weekday").text
         soup = bs(html, 'html.parser')
         title = soup.find_all('a', {'class': 'title'})
-        driver.get(self.nw_url+webtoon_type)
+        driver.get(self.nw_url+"weekday")
 
+        part_wd = WebtoonData()
         # 각각의 웹툰 정보 수집 시작
         idx = 0
         for i in range(len(title)):
             sleep(0.5)
-            print("\rprocess: " + str(i + 1) + " / " + str(len(title)), end="")
+            print("\rprocess(weekday)): " + str(i + 1) + " / " + str(len(title)), end="")
             # 월요일 첫 번째 웹툰부터 순서대로 클릭
             page = driver.find_elements(By.CLASS_NAME, "title")
             page[i].click()
@@ -41,16 +42,13 @@ class MyWebCrawling:
             soup = bs(html, 'html.parser')
 
             # 요일 수집
-            if webtoon_type == "finish":
-                day = "완결"
-            else:
-                day = soup.find_all('ul', {'class': 'category_tab'})
-                day = day[0].find('li', {'class': 'on'}).text[0:1]
+            day = soup.find_all('ul', {'class': 'category_tab'})
+            day = day[0].find('li', {'class': 'on'}).text[0:1]
 
             # 요일 두 개 이상이면 요일만 추가함
             current_title = title[i].text
-            if current_title in wd.title_list:
-                wd.day_list[wd.title_list.index(current_title)] += ', ' + day
+            if current_title in part_wd.title_list:
+                part_wd.day_list[part_wd.title_list.index(current_title)] += ', ' + day
                 driver.back()
                 continue
 
@@ -63,31 +61,101 @@ class MyWebCrawling:
             story = soup.find('div', {'class': 'detail'}).find('p').text
 
             # 리스트에 추가
-            wd.id_list.append(idx)
-            wd.thumbnail_list.append(image_url)
-            wd.title_list.append(current_title)
-            wd.author_list.append(author)
-            wd.day_list.append(day)
+            part_wd.id_list.append(idx)
+            part_wd.thumbnail_list.append(image_url)
+            part_wd.title_list.append(current_title)
+            part_wd.author_list.append(author)
+            part_wd.day_list.append(day)
             if genre[1] == "무협/사극":
-                wd.genre_list.append("무협")
+                part_wd.genre_list.append("무협")
             else:
-                wd.genre_list.append(genre[1])
-            wd.story_list.append(story)
-            wd.platform_list.append("네이버")
-            wd.url_list.append(driver.current_url)
+                part_wd.genre_list.append(genre[1])
+            part_wd.story_list.append(story)
+            part_wd.platform_list.append("네이버")
+            part_wd.url_list.append(driver.current_url)
 
             # 뒤로 가기
             idx += 1
             driver.back()
             sleep(0.5)
+        return part_wd
+
+    def get_finish_info(self):
+        driver = webdriver.Chrome(self.chromedriver_url)
+        html = requests.get(self.nw_url + "finish").text
+        soup = bs(html, 'html.parser')
+        thumb = soup.find_all('div', {'class': 'thumb'})
+        driver.get(self.nw_url + "finish")
+
+        part_wd = WebtoonData()
+        # 웹툰 정보 수집 시작
+        idx = 0
+        for i in range(len(thumb)):
+            sleep(0.5)
+            print("\rprocess(finish)): " + str(i + 1) + " / " + str(len(thumb)), end="")
+            # 첫 번째 웹툰부터 순서대로 클릭
+            page = driver.find_elements(By.CLASS_NAME, "thumb")[1:]
+            page[i].click()
+
+            # 이동한 페이지 주소 읽고 파싱
+            html = driver.page_source
+            soup = bs(html, 'html.parser')
+
+            # 정보 수집
+            day = "완결"
+            title = soup.find('span', {'class': 'title'}).text
+            image_url = soup.find('div', {'class': 'thumb'}).find('a').find('img')
+            image_url = image_url['src']
+            author = soup.find('span', {'class': 'wrt_nm'}).text[8:]
+            author = author.replace(' / ', ', ')
+            genre = soup.find('span', {'class': 'genre'}).text.split(", ")
+            story = soup.find('div', {'class': 'detail'}).find('p').text
+
+            # 리스트에 추가
+            part_wd.id_list.append(idx)
+            part_wd.thumbnail_list.append(image_url)
+            part_wd.title_list.append(title)
+            part_wd.author_list.append(author)
+            part_wd.day_list.append(day)
+            if genre[1] == "무협/사극":
+                part_wd.genre_list.append("무협")
+            else:
+                part_wd.genre_list.append(genre[1])
+            part_wd.story_list.append(story)
+            part_wd.platform_list.append("네이버")
+            part_wd.url_list.append(driver.current_url)
+
+            # 뒤로 가기
+            idx += 1
+            driver.back()
+            sleep(0.5)
+        return part_wd
 
     # 네이버 웹툰 각각의 정보 가져오기
     def get_naver_webtoon_info(self):
         wd = WebtoonData()
-        self.get_info(wd, "weekday")
-        self.get_info(wd, "finish")
+
+        if os.path.isfile("naver1.csv"):
+            first_td = ut.get_from_csv("naver1.csv")
+        else:
+            first_wd = self.get_weekday_info()
+            first_td = td.make_total_data(first_wd)
+            ut.make_csv("naver1.csv", first_td)
+
+        if os.path.isfile("naver2.csv"):
+            second_td = ut.get_from_csv("naver2.csv")
+        else:
+            second_wd = self.get_finish_info()
+            second_td = td.make_total_data(second_wd)
+            ut.make_csv("naver2.csv", second_td)
+
+
+        total_td = pd.concat([first_td, second_td])
+        total_td['id'] = [i for i in range(len(total_td))]
+        total_td.set_index('id', inplace=True)
+
         print()
-        return wd
+        return total_td
 
     # 카카오 웹툰 각각의 정보 가져오고 파일로까지 저장하기 (요일 단위로)
     def get_kakao_webtoon_info(self):
@@ -122,7 +190,7 @@ class MyWebCrawling:
             day = driver.find_elements(By.CLASS_NAME, "e1201h8a0")[i]
             action.move_to_element(day).click().perform()
             if i == 7:
-                self.do_scroll_down(60, driver)
+                self.do_scroll_down(80, driver)
             else:
                 self.do_scroll_down(10, driver)
             webtoons = driver.find_elements(By.CLASS_NAME, "css-qm6qod")
@@ -130,7 +198,6 @@ class MyWebCrawling:
             # 웹툰별로 정보 저장하기
             for j in range(len(webtoons)):
                 print("\rday[" + str(i) + "] - process: " + str(j + 1) + " / " + str(len(webtoons)), end="")
-
                 # 해당 웹툰으로 이동하기
                 webtoon = driver.find_elements(By.CLASS_NAME, "css-qm6qod")[j]
                 action.move_to_element(webtoon).key_down(Keys.CONTROL).click().key_up(Keys.CONTROL).perform()
@@ -159,8 +226,9 @@ class MyWebCrawling:
                 day = soup.find_all('div', {'class': 'css-7a7cma'})[0].text
                 day_word_end_idx = day.find(" 연재")
                 if day_word_end_idx == -1:
-                    day_word_end_idx = day.find(" ")
-                day = day[:day_word_end_idx]
+                    day = "완결"
+                else:
+                    day = day[:day_word_end_idx]
                 author = soup.find_all('div', {'class': 'css-7a7cma'})[1].text
                 author = author.replace(',', ', ')
                 genre = soup.find('div', {'class': 'infoBox'})
@@ -199,8 +267,11 @@ class MyWebCrawling:
         # 요일별로 만든 dataframe 모두 합치고 기존 것들은 지우기
         total_td = pd.concat(day_tds)
         total_td = total_td.drop_duplicates(['title'])
-        for filename in filenames:
-            ut.delete_csv(filename)
+        total_td['id'] = [i for i in range(len(total_td))]
+        total_td.set_index('id', inplace=True)
+
+        # for filename in filenames:
+        #     ut.delete_csv(filename)
 
         print()
         return total_td

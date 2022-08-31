@@ -24,8 +24,7 @@ def do_web_crawling():
     # 네이버 웹툰 정보 가져오기
     print("--naver webtoon crawling start--")
     if not os.path.isfile(naver_csv_filename):
-        naver_wd = wc.get_naver_webtoon_info()
-        naver_td = td.make_total_data(naver_wd)
+        naver_td = wc.get_naver_webtoon_info()
         ut.make_csv(naver_csv_filename, naver_td)
     else:
         naver_td = ut.get_from_csv(naver_csv_filename)
@@ -43,6 +42,8 @@ def do_web_crawling():
 
     # 가져온 데이터들 합치기
     td.merge_total_data([naver_td, kakao_td])
+    # td.total_data = naver_td
+    # td.total_data = kakao_td
     # 웹툰 카테고리 분류하기
     td.save_category()
 
@@ -92,7 +93,7 @@ def do_clustering_by_story(story_ct, k_for_total=175):
     print("--kmeans story clustering end--")
 
 # style에 대한 k-means 클러스터링 하기
-def do_clustering_by_style(style_ct, k):
+def do_clustering_by_style(style_ct, k, svd_n):
     # 이미지 로딩하기 (새로 하기 또는 저장된 데이터 불러오기)
     print("--images loading start--")
     if not os.path.isfile(images_filename):
@@ -103,13 +104,14 @@ def do_clustering_by_style(style_ct, k):
     print("--images loading end--")
     print("--style extraction start--")
     # 각 이미지마다 스타일 추출하기
-    style_ct.extract_style(thumbnails)
+    style_ct.extract_style(thumbnails, svd_n)
     print("--style extraction end--")
     print("--kmeans style clustering start--")
     # 추출한 스타일로 k-means 클러스터링 하기
     cluster_labels = style_ct.kmeans_cluster(k)
     td.total_data["cluster_style"] = cluster_labels
-    style_ct.visualize(cluster_labels)
+    if svd_n == 2:
+        style_ct.visualize(cluster_labels)
     print("--kmeans style clustering end--")
 
 # 각 클러스터에 대해 유사도가 높은 데이터만 따로 정리해놓기
@@ -131,8 +133,8 @@ if __name__ == '__main__':
     do_web_crawling()
     story_clustering = do_tokenize_and_vectorize()
     style_clustering = MyStyleClustering(td.total_data)
-    do_clustering_by_story(story_clustering, k_for_total=50)
-    do_clustering_by_style(style_clustering, k=50)
+    do_clustering_by_story(story_clustering, k_for_total=80)
+    do_clustering_by_style(style_clustering, k=80, svd_n=10)
     arrange_high_similarity_webtoons(story_clustering, style_clustering)
     ut.save_images(td.total_data['thumbnail'])
     ut.make_csv(cluster_csv_filename, td.total_data)
