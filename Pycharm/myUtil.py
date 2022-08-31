@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle as pk
 from urllib import request
+from PIL import Image
 import os
 
 
@@ -13,7 +14,7 @@ class MyUtil:
     # CSV 파일이 있다면 가져오기
     @staticmethod
     def get_from_csv(filename):
-        return pd.read_csv(filename)
+        return pd.read_csv(filename, encoding='utf-8-sig')
 
     # CSV 파일을 지우기
     @staticmethod
@@ -37,10 +38,16 @@ class MyUtil:
     def save_images(urls):
         if not os.path.isdir("data/images"):
             os.makedirs("data/images")
+            os.makedirs("data/resized_images")
             print("--images downloading start--")
             for idx, url in enumerate(urls):
                 print("\r" + str(idx + 1) + "/" + str(len(urls)), end="")
-                request.urlretrieve(url, "data/images/thumbnail" + str(idx) + ".png")
+                img_name = "data/images/thumbnail" + str(idx) + ".jpg"
+                resized_img_name = "data/resized_images/thumbnail" + str(idx) + ".jpeg"
+                request.urlretrieve(url, img_name)
+                img = Image.open(img_name).convert('RGB')
+                img.save(resized_img_name, 'JPEG', qualty=85)
+
             print()
             print("--images downloading end--")
         else:

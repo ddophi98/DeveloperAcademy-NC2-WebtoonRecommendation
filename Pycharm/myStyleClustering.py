@@ -41,7 +41,7 @@ class MyStyleClustering:
         print()
         return images
 
-    def extract_style(self, images):
+    def extract_style(self, images, svd_n):
         extractor = StyleContentModel()
 
         # 스타일 추출한 후 클러스터링을 위해 차원 축소하기
@@ -61,8 +61,12 @@ class MyStyleClustering:
             # 모든 썸네일에서 나온 정보들을 한 배열에 저장해놓기
             infos.append(style_info)
         print()
-        svd = TruncatedSVD(n_components=2)
-        self.style_info_list = np.array(svd.fit_transform(infos))
+        if svd_n == 0:
+            self.style_info_list = infos
+        else:
+            svd = TruncatedSVD(n_components=svd_n)
+            self.style_info_list = np.array(svd.fit_transform(infos))
+
 
     def kmeans_cluster(self, k):
         kmeans = KMeans(n_clusters=k)
