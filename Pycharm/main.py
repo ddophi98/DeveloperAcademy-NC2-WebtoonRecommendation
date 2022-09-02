@@ -97,17 +97,14 @@ def do_clustering_by_story(story_ct, k_for_total=175):
 def do_clustering_by_style(style_ct, k, train_n, svd_n):
     # 이미지 로딩하기 (새로 하기 또는 저장된 데이터 불러오기)
     print("--images loading start--")
-    if not os.path.isfile(images_filename):
-        thumbnails = style_ct.get_img()
-        ut.save_data(images_filename, thumbnails)
-    else:
-        thumbnails = ut.load_data(images_filename)
+    thumbnails = style_ct.get_img()
     print("--images loading end--")
     print("--style extraction start--")
     # 각 이미지마다 스타일 추출하기
-    index = 1
+    index = 238
+    # index = 1295
     print(td.total_data['title'][index])
-    style_ct.test_extract_style(thumbnails[index], 10)
+    style_ct.test_extract_style(thumbnails[index], 100)
     # if not os.path.isfile(trained_images_filename):
     #     trained_images = style_ct.extract_style(thumbnails, train_n)
     #     ut.save_data(trained_images_filename, trained_images)
@@ -142,10 +139,10 @@ if __name__ == '__main__':
     do_web_crawling()
     # story_clustering = do_tokenize_and_vectorize()
     # do_clustering_by_story(story_clustering, k_for_total=64)
+    ut.save_images(td.total_data['thumbnail'])
     style_clustering = MyStyleClustering(td.total_data)
     do_clustering_by_style(style_clustering, k=32, train_n=256, svd_n=2)
     # arrange_high_similarity_webtoons(story_clustering, style_clustering)
-    # ut.save_images(td.total_data['thumbnail'])
     # ut.make_csv(cluster_csv_filename, td.total_data)
     # ut.make_csv(cluster_csv_filename, td.total_data)
     # ut.make_csv(cluster_detail_csv_filename, td.cluster_details)

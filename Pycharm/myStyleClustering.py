@@ -1,4 +1,5 @@
 import PIL
+from PIL import Image
 import tensorflow as tf
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -22,8 +23,8 @@ class MyStyleClustering:
         self.style_info_list = np.array([])
 
     # 이미지 크기 바꾸기
-    def resize_img(self, path_to_img):
-        img = tf.io.read_file(path_to_img)
+    def resize_img(self, img_path):
+        img = tf.io.read_file(img_path)
         img = tf.image.decode_image(img, channels=3)
         img = tf.image.convert_image_dtype(img, tf.float32)
         img = np.squeeze(img)
@@ -42,12 +43,13 @@ class MyStyleClustering:
     def get_img(self):
         images = []
         thumbnails_size = len(self.data['thumbnail'])
-        for i, thumbnail in enumerate(self.data['thumbnail']):
+        for i in range(thumbnails_size):
             print("\r" + str(i + 1) + "/" + str(thumbnails_size), end="")
-            img = tf.keras.utils.get_file('thumbnail' + str(i + 1) + '.jpg', thumbnail)
-            images.append(self.resize_img(img))
+            images.append(self.resize_img(("data/images/thumbnail" + str(i) + ".jpg")))
         print()
         return images
+
+    # img = tf.keras.utils.get_file('thumbnail' + str(i + 1) + '.jpg', thumbnail)
 
     # 학습을 시키면서 스타일 추출해내기
     def test_extract_style(self, style_image, train_n):
