@@ -16,6 +16,7 @@ cluster_csv_filename = "data/클러스터정보.csv"
 cluster_detail_csv_filename = "data/클러스터상위단어.csv"
 vector_filename = "data/vector_data.pickle"
 images_filename = "data/images.pickle"
+trained_images_filename = "data/trained_images.pickle"
 
 # 네이버 및 카카오 웹툰 크롤링 하기 (새로 하기 또는 저장된 데이터 불러오기)
 def do_web_crawling():
@@ -93,7 +94,7 @@ def do_clustering_by_story(story_ct, k_for_total=175):
     print("--kmeans story clustering end--")
 
 # style에 대한 k-means 클러스터링 하기
-def do_clustering_by_style(style_ct, k, svd_n):
+def do_clustering_by_style(style_ct, k, train_n, svd_n):
     # 이미지 로딩하기 (새로 하기 또는 저장된 데이터 불러오기)
     print("--images loading start--")
     if not os.path.isfile(images_filename):
@@ -104,15 +105,23 @@ def do_clustering_by_style(style_ct, k, svd_n):
     print("--images loading end--")
     print("--style extraction start--")
     # 각 이미지마다 스타일 추출하기
-    style_ct.extract_style(thumbnails, svd_n)
-    print("--style extraction end--")
-    print("--kmeans style clustering start--")
-    # 추출한 스타일로 k-means 클러스터링 하기
-    cluster_labels = style_ct.kmeans_cluster(k)
-    td.total_data["cluster_style"] = cluster_labels
-    if svd_n == 2:
-        style_ct.visualize(cluster_labels)
-    print("--kmeans style clustering end--")
+    index = 1
+    print(td.total_data['title'][index])
+    style_ct.test_extract_style(thumbnails[index], 10)
+    # if not os.path.isfile(trained_images_filename):
+    #     trained_images = style_ct.extract_style(thumbnails, train_n)
+    #     ut.save_data(trained_images_filename, trained_images)
+    # else:
+    #     trained_images = ut.load_data(trained_images_filename)
+    # style_ct.svd(trained_images, svd_n)
+    # print("--style extraction end--")
+    # print("--kmeans style clustering start--")
+    # # 추출한 스타일로 k-means 클러스터링 하기
+    # cluster_labels = style_ct.kmeans_cluster(k)
+    # td.total_data["cluster_style"] = cluster_labels
+    # if svd_n == 2:
+    #     style_ct.visualize(cluster_labels)
+    # print("--kmeans style clustering end--")
 
 # 각 클러스터에 대해 유사도가 높은 데이터만 따로 정리해놓기
 def arrange_high_similarity_webtoons(story_ct, style_ct):
@@ -131,13 +140,13 @@ def arrange_high_similarity_webtoons(story_ct, style_ct):
 
 if __name__ == '__main__':
     do_web_crawling()
-    story_clustering = do_tokenize_and_vectorize()
+    # story_clustering = do_tokenize_and_vectorize()
+    # do_clustering_by_story(story_clustering, k_for_total=64)
     style_clustering = MyStyleClustering(td.total_data)
-    do_clustering_by_story(story_clustering, k_for_total=80)
-    do_clustering_by_style(style_clustering, k=80, svd_n=10)
-    arrange_high_similarity_webtoons(story_clustering, style_clustering)
-    ut.save_images(td.total_data['thumbnail'])
-    ut.make_csv(cluster_csv_filename, td.total_data)
-    ut.make_csv(cluster_csv_filename, td.total_data)
-    ut.make_csv(cluster_detail_csv_filename, td.cluster_details)
+    do_clustering_by_style(style_clustering, k=32, train_n=256, svd_n=2)
+    # arrange_high_similarity_webtoons(story_clustering, style_clustering)
+    # ut.save_images(td.total_data['thumbnail'])
+    # ut.make_csv(cluster_csv_filename, td.total_data)
+    # ut.make_csv(cluster_csv_filename, td.total_data)
+    # ut.make_csv(cluster_detail_csv_filename, td.cluster_details)
 

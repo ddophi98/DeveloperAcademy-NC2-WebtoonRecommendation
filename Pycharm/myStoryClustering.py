@@ -10,7 +10,7 @@ import seaborn as sns
 
 
 class MyStoryClustering:
-    top_n_features = 3
+    top_n_features = 5
 
     def __init__(self, vectorized, vectorizer, total_data):
         self.vectorized = vectorized
