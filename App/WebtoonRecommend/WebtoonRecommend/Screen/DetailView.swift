@@ -218,7 +218,7 @@ struct DetailView: View {
                                 }
                             }
                         case "story":
-                            ForEach(curWebtoon.clusterGroupByStroyInGenre, id: \.self) { index in
+                            ForEach(curWebtoon.clusterGroupByStory, id: \.self) { index in
                                 if curWebtoon.id != index {
                                     getCell(idx: index)
                                 }
