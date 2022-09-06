@@ -8,9 +8,9 @@
 import UIKit
 
 class GlobalVar {
-    static let webtoonSize = 1650
+    static let webtoonSize = 4243
     static let imageFileName = "thumbnail"
-    static let imageFileType = ".png"
+    static let imageFileType = ".jpeg"
     static let folderName = "Json"
     static let webtoonJsonName = "webtoons.json"
     static let clusterWordJsonName = "clusterWords.json"
