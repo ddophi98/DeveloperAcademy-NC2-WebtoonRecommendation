@@ -17,8 +17,8 @@ class MyWebCrawling:
     nw_url = 'https://comic.naver.com/webtoon/'
     kw_url = 'https://page.kakao.com/main?categoryUid=10&subCategoryUid=1002'
     chromedriver_url = 'C:/Storage/Storage_Coding/PycharmProjects/SideProjcet-WebtoonRecommendation/Pycharm/chromedriver'
-    login_id = 'barezebe119@naver.com'
-    login_pw = 'Whiteout00'
+    login_id = '???'
+    login_pw = '???'
 
     def get_weekday_info(self):
         driver = webdriver.Chrome(self.chromedriver_url)
