@@ -1,6 +1,0 @@
-framework module Pods_WebtoonRecommend {
-  umbrella header "Pods-WebtoonRecommend-umbrella.h"
-
-  export *
-  module * { export * }
-}
