@@ -169,31 +169,6 @@ class WebtoonData: ObservableObject {
             image = thumbnail!
         }
 
-        var sliced = jsonData.clusterGroupByStory.slice(start: 1, end: jsonData.clusterGroupByStory.count-1)
-        var strArray = sliced.components(separatedBy: ", ")
-        var clusterGroupByStory = [Int]()
-        if strArray[0] != "" {
-            clusterGroupByStory = strArray.map{Int($0)!}
-        }
-        
-        sliced = jsonData.clusterGroupByStroyInGenre.slice(start: 1, end: jsonData.clusterGroupByStroyInGenre.count-1)
-        strArray = sliced.components(separatedBy: ", ")
-        var clusterGroupByStroyInGenre = [Int]()
-        if strArray[0] != "" {
-            clusterGroupByStroyInGenre = strArray.map{Int($0)!}
-        }
-        
-        print()
-        print(jsonData.clusterGroupByStyle)
-        sliced = jsonData.clusterGroupByStyle.slice(start: 1, end: jsonData.clusterGroupByStyle.count-1)
-        print(sliced)
-        strArray = sliced.components(separatedBy: ", ")
-        var clusterGroupByStyle = [Int]()
-        if strArray[0] != "" {
-            clusterGroupByStyle = strArray.map{Int($0)!}
-        }
-        
-
         let newWebtoon = Webtoon(
             id: jsonData.id,
             title: jsonData.title,
@@ -207,9 +182,9 @@ class WebtoonData: ObservableObject {
             clusterByStory: jsonData.clusterByStory,
             clusterByStoryInGenre: jsonData.clusterByStoryInGenre,
             clusterByStyle: jsonData.clusterByStyle,
-            clusterGroupByStory: clusterGroupByStory,
-            clusterGroupByStroyInGenre: clusterGroupByStroyInGenre,
-            clusterGroupByStyle: clusterGroupByStyle
+            clusterGroupByStory: jsonData.clusterGroupByStory,
+            clusterGroupByStroyInGenre: jsonData.clusterGroupByStroyInGenre,
+            clusterGroupByStyle: jsonData.clusterGroupByStyle
         )
         webtoons.append(newWebtoon)
     }
@@ -266,9 +241,9 @@ struct WebtoonJson: Codable {
     var clusterByStory: Int
     var clusterByStoryInGenre: Int
     var clusterByStyle: Int
-    var clusterGroupByStory: String
-    var clusterGroupByStroyInGenre: String
-    var clusterGroupByStyle: String
+    var clusterGroupByStory: [Int]
+    var clusterGroupByStroyInGenre: [Int]
+    var clusterGroupByStyle: [Int]
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
