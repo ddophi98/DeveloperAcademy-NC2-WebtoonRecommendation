@@ -75,6 +75,7 @@ class FirebaseTool {
                     return
                 }
             }
+            webtoonJsonArr = webtoonJsonArr.sorted(by: {$0.id < $1.id})
             completion(webtoonJsonArr)
         }
     }
