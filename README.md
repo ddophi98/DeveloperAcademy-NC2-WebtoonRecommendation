@@ -12,23 +12,19 @@
 - 상세 화면에서는 웹툰의 여러 정보들을 보여줄 뿐만 아니라 실제 웹사이트로 연결해줍니다.
 
 ## Flow
-<img width="774" alt="image" src="https://user-images.githubusercontent.com/72330884/188566054-e9699b69-fb1d-4096-8a38-c1aa8f8c56df.png">
+- 웹 크롤링, 비지도 학습, 데이터 업로드를 거쳐서, 마지막으로 결과물을 앱에서 보여줍니다.
+- 그림체 기준으로 분류한 것에 대해서는 네가지 방법을 시도해봤는데, 가장 성능이 괜찮았던 네번째 방법을 사용했습니다.
+- 성능 측정 기준은 얼마나 많이 같은 작가의 웹툰을 유사한 웹툰으로 분류하는지로 파악했습니다.
+<img width="1000" alt="image" src="https://user-images.githubusercontent.com/72330884/220370517-ddef240f-d5ef-461c-bf24-b5fc25e7780c.png">
 
 ## Screenshots
-### 장르 화면
-<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188559778-f75b1c65-fc8d-4ff6-a0ac-26f1183d0949.gif">
+|장르 화면|스토리 화면|그림체 화면|
+|---|---|---|
+|<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188559778-f75b1c65-fc8d-4ff6-a0ac-26f1183d0949.gif">|<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188559935-33919ea7-a4b2-40ad-9420-c0d028814673.gif">|<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188560096-31fe1b43-f595-4fa5-a723-ae0a4b03b6b7.gif">|
 
-### 스토리 화면
-<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188559935-33919ea7-a4b2-40ad-9420-c0d028814673.gif">
-
-### 그림체 화면
-<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188560096-31fe1b43-f595-4fa5-a723-ae0a4b03b6b7.gif">
-
-### 검색 화면
-<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188561779-cf093442-51d1-40f7-a07d-35e1e985d83e.gif">
-
-### 상세 화면
-<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188561968-915c6a21-9a66-4e3d-8354-61ce602d93bf.gif">
+|검색 화면|상세 화면|
+|---|---|
+|<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188561779-cf093442-51d1-40f7-a07d-35e1e985d83e.gif">|<img width="200" alt="icon" src="https://user-images.githubusercontent.com/72330884/188561968-915c6a21-9a66-4e3d-8354-61ce602d93bf.gif">|
 
 ## Development Environment
 1. MacOS Monterey 12.4
@@ -40,6 +36,6 @@
 - 개발: XCode, PyCharm
 
 ## Skills
-Swift - UI 개발 (SwiftUI)   
-Python - 웹 크롤링, 토큰화 및 벡터화, 차원 축소, ML(k-means, style transfer)   
-Database - Firebase   
+- Swift - UI 개발 (SwiftUI)   
+- Python - 웹 크롤링, 토큰화 및 벡터화, 차원 축소, ML(k-means, style transfer), 이미지 특징 추출 (haralick, average hash)    
+- Database - Firebase   
